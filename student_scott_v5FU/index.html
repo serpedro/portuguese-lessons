@@ -94,27 +94,26 @@
 <h1>Basic Conversation 1 – Scott</h1>
 
 <p style="text-align:center;color:#444;max-width:700px;margin:auto;">
-  Practice introductory European Portuguese conversation phrases. Listen, repeat, download audio, or test yourself with the global quiz or audio quiz.
+  Practice introductory European Portuguese conversation phrases. Listen, repeat, download audio, or test yourself with the global text quiz or audio quiz.
 </p>
 
 <!-- QUIZ CONTROLS -->
 <div class="quiz-bar">
   <button class="quiz" id="startQuizUnified">🎓 Start Global Quiz</button>
-  <button class="quiz" id="startAudioQuiz">🎧 Start Audio Quiz</button>
 </div>
 
 <div id="quizUnifiedStep" class="muted" style="text-align:center;"></div>
 <div id="globalQuizBox" class="quiz-box" style="display:none;"></div>
-<div id="audioQuizBox" class="quiz-box" style="display:none;"></div>
 
 <div id="phrasebook"></div>
 
 <!-- ZIP helpers -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
 <script>
 // ----------------------------------------------------
-// SCOTT'S PHRASE SECTIONS (including Farewells)
+// SCOTT'S PHRASE SECTIONS (INCLUDING FAREWELLS)
 // ----------------------------------------------------
 const sections = [
   { title:'Greetings', phrases:[
@@ -175,7 +174,7 @@ const sections = [
 const container = document.getElementById('phrasebook');
 
 // ----------------------------------------------------
-// RENDER SECTIONS INTO THE PAGE
+// RENDER SECTIONS
 // ----------------------------------------------------
 sections.forEach(section=>{
   const secDiv=document.createElement('div');
@@ -184,7 +183,6 @@ sections.forEach(section=>{
   titleSpan.textContent=section.title;
   h2.appendChild(titleSpan);
 
-  // Section controls
   const controls=document.createElement('div');
   controls.className='section-controls';
 
@@ -207,7 +205,6 @@ sections.forEach(section=>{
   progressMsg.className='progress-message';
   secDiv.appendChild(progressMsg);
 
-  // Table
   const table=document.createElement('table');
   const thead=document.createElement('thead');
   thead.innerHTML='<tr><th>Português</th><th>English</th><th>Actions</th></tr>';
@@ -229,14 +226,12 @@ sections.forEach(section=>{
     const tdActions=document.createElement('td');
     tdActions.className='actions';
 
-    // Play button
     const playBtn=document.createElement('button');
     playBtn.className='play';
     playBtn.textContent='Play';
     playBtn.addEventListener('click',()=>playAudio(ph.id,1));
     tdActions.appendChild(playBtn);
 
-    // Slow button
     const slowBtn=document.createElement('button');
     slowBtn.className='slow';
     slowBtn.textContent='Slow';
@@ -246,7 +241,6 @@ sections.forEach(section=>{
     tr.appendChild(tdPt);
     tr.appendChild(tdEn);
     tr.appendChild(tdActions);
-
     tbody.appendChild(tr);
   });
 
@@ -256,7 +250,7 @@ sections.forEach(section=>{
 });
 
 // ----------------------------------------------------
-// AUDIO FUNCTIONS
+// AUDIO HELPERS
 // ----------------------------------------------------
 let currentAudioObj=null;
 
@@ -284,7 +278,7 @@ function repeatSection(section){
 }
 
 // ----------------------------------------------------
-// SHARED QUIZ HELPERS
+// SHARED HELPERS
 // ----------------------------------------------------
 function shuffle(arr){
   return arr.sort(()=>Math.random()-0.5);
@@ -306,83 +300,57 @@ function sanitizeFilename(s){
     .trim()
     .replace(/\s+/g,'_');
 }
+
 // ----------------------------------------------------
-// GLOBAL QUIZ CONTROLS
+// GLOBAL QUIZ (TEXT + AUDIO MODES)
 // ----------------------------------------------------
 const unifiedBtn = document.getElementById('startQuizUnified');
 const unifiedStep = document.getElementById('quizUnifiedStep');
 const globalQuizBox = document.getElementById('globalQuizBox');
 
-let activeQuiz = null;
+let activeQuiz=null;
 
-// When clicking the global quiz button
-unifiedBtn.addEventListener('click', () => {
+unifiedBtn.addEventListener('click',()=>{
   closeActiveQuiz();
-  globalQuizBox.style.display = 'none';
-  unifiedStep.innerHTML = '';
-
-  showQuizTypeChooser(type => {
-    if (type === 'text') {
-      showModeChooser(mode => {
-        startTextQuiz({
-          mode,
-          phrases: sections.flatMap(s => s.phrases),
-          container: globalQuizBox,
-          onBeforeStart: () => {
-            closeActiveQuiz();
-            globalQuizBox.innerHTML = '';
-            globalQuizBox.style.display = 'block';
-          }
-        });
-      });
-    }
-
-    if (type === 'audio') {
+  globalQuizBox.style.display='none';
+  unifiedStep.innerHTML='';
+  showModeChooser(mode=>{
+    const phrases = sections.flatMap(s=>s.phrases);
+    if(mode === 'audio'){
       startAudioQuiz({
-        phrases: sections.flatMap(s => s.phrases),
-        container: globalQuizBox,
-        onBeforeStart: () => {
+        phrases,
+        container:globalQuizBox,
+        onBeforeStart:()=>{
           closeActiveQuiz();
-          globalQuizBox.innerHTML = '';
-          globalQuizBox.style.display = 'block';
+          globalQuizBox.innerHTML='';
+          globalQuizBox.style.display='block';
+        }
+      });
+    }else{
+      startTextQuiz({
+        mode,
+        phrases,
+        container:globalQuizBox,
+        onBeforeStart:()=>{
+          closeActiveQuiz();
+          globalQuizBox.innerHTML='';
+          globalQuizBox.style.display='block';
         }
       });
     }
   });
 });
 
-// ----------------------------------------------------
-// CHOOSE QUIZ TYPE (text or audio)
-// ----------------------------------------------------
-function showQuizTypeChooser(onSelect){
-  const wrap=document.createElement('div');
-  wrap.className='mode-chooser';
-  wrap.innerHTML=`
-    <button class="quiz" data-type="text">📝 Text Quiz</button>
-    <button class="quiz" data-type="audio">🔊 Audio Quiz</button>
-  `;
-  unifiedStep.innerHTML='';
-  unifiedStep.appendChild(wrap);
-
-  wrap.querySelectorAll('button').forEach(b=>{
-    b.addEventListener('click',()=>{
-      const type=b.dataset.type;
-      unifiedStep.innerHTML='';
-      onSelect(type);
-    });
-  });
-}
-
-// ----------------------------------------------------
-// TEXT QUIZ MODE
-// ----------------------------------------------------
+// Choose quiz mode
 function showModeChooser(onChoose){
   const modeWrap=document.createElement('div');
   modeWrap.className='mode-chooser';
   modeWrap.innerHTML=`
     <button class="quiz" data-mode="pt-en">🇵🇹 Portuguese → English</button>
     <button class="quiz" data-mode="en-pt">🇬🇧 English → Portuguese</button>
-    <button class="quiz" data-mode="mix">🔄 Mixed</button>`;
+    <button class="quiz" data-mode="mix">🔄 Mixed</button>
+    <button class="quiz" data-mode="audio">🔊 Audio Quiz (PT → EN)</button>
+  `;
   unifiedStep.innerHTML='';
   unifiedStep.appendChild(modeWrap);
   modeWrap.querySelectorAll('button').forEach(b=>{
@@ -394,36 +362,36 @@ function showModeChooser(onChoose){
   });
 }
 
+// TEXT QUIZ
 function startTextQuiz({mode,phrases,container,onBeforeStart}){
   if(onBeforeStart) onBeforeStart();
 
-  const state = {
-    idx: 0,
-    score: 0,
-    list: shuffle(phrases.slice()),
+  const state={
+    idx:0,
+    score:0,
+    list:shuffle(phrases.slice()),
     stop(){
       container.style.display='none';
       container.innerHTML='';
     }
   };
-
   closeActiveQuiz();
-  activeQuiz = state;
+  activeQuiz=state;
 
-  const qEl = document.createElement('div');
+  const qEl=document.createElement('div');
   qEl.className='quiz-question';
 
-  const optsEl = document.createElement('div');
+  const optsEl=document.createElement('div');
   optsEl.className='quiz-options';
 
-  const ctrEl = document.createElement('div');
+  const ctrEl=document.createElement('div');
   ctrEl.className='muted';
   ctrEl.style.marginTop='10px';
 
-  const nextWrap = document.createElement('div');
+  const nextWrap=document.createElement('div');
   nextWrap.style.marginTop='10px';
 
-  const nextBtn = document.createElement('button');
+  const nextBtn=document.createElement('button');
   nextBtn.className='quiz';
   nextBtn.textContent='Next';
   nextBtn.style.display='none';
@@ -444,25 +412,23 @@ function startTextQuiz({mode,phrases,container,onBeforeStart}){
       return;
     }
 
-    const item = state.list[state.idx];
-
+    const item=state.list[state.idx];
     let dir = mode === 'mix'
-      ? (Math.random()>0.5 ? 'pt-en' : 'en-pt')
+      ? (Math.random()>0.5?'pt-en':'en-pt')
       : mode;
 
-    const isPtEn = dir === 'pt-en';
+    const isPtEn = dir==='pt-en';
     const questionText = isPtEn ? item.pt : item.en;
     const correct = isPtEn ? item.en : item.pt;
-
     const pool = isPtEn
       ? state.list.map(p=>p.en)
       : state.list.map(p=>p.pt);
 
-    const options = generateOptions(correct, pool);
+    const options=generateOptions(correct,pool);
 
     qEl.textContent = questionText;
-    optsEl.innerHTML = '';
-    ctrEl.textContent = `Question ${state.idx+1} of ${state.list.length}`;
+    optsEl.innerHTML='';
+    ctrEl.textContent=`Question ${state.idx+1} of ${state.list.length}`;
 
     options.forEach(opt=>{
       const b=document.createElement('button');
@@ -472,7 +438,7 @@ function startTextQuiz({mode,phrases,container,onBeforeStart}){
         if(opt===correct){
           b.classList.add('correct');
           state.score++;
-        } else {
+        }else{
           b.classList.add('wrong');
           Array.from(optsEl.children).forEach(btn=>{
             if(btn.textContent===correct) btn.classList.add('correct');
@@ -492,72 +458,86 @@ function startTextQuiz({mode,phrases,container,onBeforeStart}){
   renderQuestion();
 }
 
-// ----------------------------------------------------
-// AUDIO QUIZ MODE (no replay button)
-// ----------------------------------------------------
+// AUDIO QUIZ (PT audio → EN options, single Play/Replay button)
 function startAudioQuiz({phrases,container,onBeforeStart}){
   if(onBeforeStart) onBeforeStart();
 
-  const state = {
-    idx: 0,
-    score: 0,
-    list: shuffle(phrases.slice()),
+  const state={
+    idx:0,
+    score:0,
+    list:shuffle(phrases.slice()),
     stop(){
       container.style.display='none';
       container.innerHTML='';
     }
   };
-
   closeActiveQuiz();
-  activeQuiz = state;
+  activeQuiz=state;
 
-  const qEl = document.createElement('div');
+  const qEl=document.createElement('div');
   qEl.className='quiz-question';
-  qEl.textContent='Listen to the phrase:';
+  qEl.textContent='Listen and choose the correct translation:';
 
-  const optsEl = document.createElement('div');
+  const audioBtn=document.createElement('button');
+  audioBtn.className='quiz';
+  audioBtn.textContent='▶️ Play';
+  audioBtn.style.marginBottom='12px';
+
+  const optsEl=document.createElement('div');
   optsEl.className='quiz-options';
 
-  const ctrEl = document.createElement('div');
+  const ctrEl=document.createElement('div');
   ctrEl.className='muted';
   ctrEl.style.marginTop='10px';
 
-  const nextWrap = document.createElement('div');
-  nextWrap.style.marginTop='10px';
+  const nextWrap=document.createElement('div');
+  nextWrap.style.marginTop='12px';
 
-  const nextBtn = document.createElement('button');
+  const nextBtn=document.createElement('button');
   nextBtn.className='quiz';
   nextBtn.textContent='Next';
   nextBtn.style.display='none';
 
   nextWrap.appendChild(nextBtn);
+
   container.appendChild(qEl);
+  container.appendChild(audioBtn);
   container.appendChild(optsEl);
   container.appendChild(ctrEl);
   container.appendChild(nextWrap);
 
+  function playAudioFor(item){
+    playAudio(item.id,1);
+  }
+
   function renderAudioQuestion(){
     if(state.idx>=state.list.length){
       qEl.textContent=`✅ Audio Quiz complete! You scored ${state.score} / ${state.list.length}.`;
+      audioBtn.style.display='none';
       optsEl.innerHTML='';
       nextBtn.textContent='Close';
       nextBtn.style.display='inline-block';
       nextBtn.onclick=()=>{ closeActiveQuiz(); };
+      ctrEl.textContent='';
       return;
     }
 
-    const item = state.list[state.idx];
+    const item=state.list[state.idx];
+    const correct=item.en;
+    const pool=state.list.map(p=>p.en);
+    const options=generateOptions(correct,pool);
 
-    // Auto-play audio (NO replay button required)
-    playAudio(item.id,1);
-
-    const correct = item.en;
-    const pool = state.list.map(p=>p.en);
-
-    const options = generateOptions(correct,pool);
-
+    // Reset UI
+    audioBtn.textContent='▶️ Play';
     optsEl.innerHTML='';
+    nextBtn.style.display='none';
     ctrEl.textContent=`Question ${state.idx+1} of ${state.list.length}`;
+
+    // Play/Replay logic
+    audioBtn.onclick=()=>{
+      audioBtn.textContent='🔁 Play again';
+      playAudioFor(item);
+    };
 
     options.forEach(opt=>{
       const b=document.createElement('button');
@@ -568,7 +548,7 @@ function startAudioQuiz({phrases,container,onBeforeStart}){
         if(opt===correct){
           b.classList.add('correct');
           state.score++;
-        } else {
+        }else{
           b.classList.add('wrong');
           Array.from(optsEl.children).forEach(btn=>{
             if(btn.textContent===correct) btn.classList.add('correct');
@@ -577,7 +557,6 @@ function startAudioQuiz({phrases,container,onBeforeStart}){
 
         nextBtn.style.display='inline-block';
         nextBtn.onclick=()=>{
-          nextBtn.style.display='none';
           state.idx++;
           renderAudioQuestion();
         };
@@ -589,18 +568,16 @@ function startAudioQuiz({phrases,container,onBeforeStart}){
   renderAudioQuestion();
 }
 
-// ----------------------------------------------------
-// CLOSE QUIZ
-// ----------------------------------------------------
+// Close any active quiz
 function closeActiveQuiz(){
-  if(activeQuiz && typeof activeQuiz.stop === 'function'){
+  if(activeQuiz && typeof activeQuiz.stop==='function'){
     activeQuiz.stop();
   }
-  activeQuiz = null;
+  activeQuiz=null;
 }
 
 // ----------------------------------------------------
-// ZIP DOWNLOAD
+// ZIP DOWNLOAD PER SECTION
 // ----------------------------------------------------
 async function downloadSection(section,header){
   const zip=new JSZip();
@@ -616,7 +593,6 @@ async function downloadSection(section,header){
   for(const ph of section.phrases){
     const fname=sanitizeFilename(ph.pt)+'.mp3';
     const url='audio/'+ph.id+'.mp3';
-
     try{
       const r=await fetch(url);
       if(!r.ok) throw new Error();
@@ -624,8 +600,7 @@ async function downloadSection(section,header){
       zip.file(fname,blob);
       done++;
       msg.textContent=`Preparing ZIP... ${Math.round(done/total*100)}%`;
-    }
-    catch{
+    }catch{
       msg.textContent=`⚠️ Missing file: ${ph.id}.mp3`;
     }
   }
@@ -645,7 +620,6 @@ async function downloadSection(section,header){
     btn.classList.remove('done');
   },4000);
 }
-
 </script>
 </body>
 </html>
