@@ -3,8 +3,10 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Basic Conversation 1 (Scott)</title>
+<title>Basic Conversation 1 – Scott</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+
 <style>
   :root{
     --blue:#0b69ff;
@@ -20,244 +22,697 @@
   h1{font-size:26px;text-align:center;color:var(--blue);margin-bottom:10px}
   h2{font-size:20px;margin-top:30px;padding-bottom:8px;border-bottom:2px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap}
   .section-controls{display:flex;gap:10px;flex-wrap:wrap}
-  button{padding:8px 14px;border:none;border-radius:6px;cursor:pointer;font-size:14px;font-weight:600;transition:background .3s}
+
+  button{
+    padding:8px 14px;
+    border:none;border-radius:6px;
+    cursor:pointer;font-size:14px;font-weight:600;
+    transition:background .3s;
+  }
   button.play{background:var(--blue);color:#fff}
   button.slow{background:var(--blue-soft);color:#fff}
   button.repeat{background:var(--green);color:#fff}
   button.download{background:var(--gray);color:#fff}
   button.download.done{background:var(--green)}
   button.quiz{background:var(--teal);color:#fff}
+
   table{width:100%;border-collapse:collapse;margin-top:10px;background:var(--card);border-radius:6px;overflow:hidden}
   th,td{padding:10px;text-align:left;border-bottom:1px solid #eee}
   td.pt{font-weight:600;width:45%}
   td.en{width:45%;color:#555}
   td.actions{width:10%;text-align:center}
+
   .progress-message{font-size:14px;color:var(--blue);margin-top:6px}
+
   .quiz-box{margin-top:15px;padding:15px;border:1px solid #ddd;border-radius:8px;background:var(--card)}
   .quiz-question{font-weight:600;margin-bottom:10px}
   .quiz-options{display:flex;flex-direction:column;gap:8px}
   .quiz-options button{background:var(--blue);color:#fff}
   .quiz-options button.correct{background:var(--green)!important}
   .quiz-options button.wrong{background:#e53935!important}
+
   .quiz-bar{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:18px 0 10px}
   .mode-chooser{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:8px}
+
   .muted{color:#666;font-size:13px}
+  .audio-buttons{display:flex;gap:10px;margin-bottom:10px}
+
   @media (max-width:640px){ td.actions{text-align:left} }
 </style>
 </head>
 <body>
-  <h1>Basic Conversation 1 (Scott)</h1>
-  <p style="text-align:center;color:#444;max-width:700px;margin:auto;">
-    Practice introductory European Portuguese conversation phrases. Listen, repeat, download audio, or test yourself with the global quiz.
-  </p>
+<h1>Basic Conversation 1 – Scott</h1>
 
-  <!-- Global quiz controls -->
-  <div class="quiz-bar">
-    <button class="quiz" id="startQuizUnified">🎓 Start Global Quiz</button>
-  </div>
-  <div id="quizUnifiedStep" class="muted" style="text-align:center;"></div>
-  <div id="globalQuizBox" class="quiz-box" style="display:none;"></div>
+<p style="text-align:center;color:#444;max-width:700px;margin:auto;">
+  Practice introductory European Portuguese conversation phrases. Listen, repeat, download audio, or test yourself with global quiz or audio quiz.
+</p>
 
-  <div id="phrasebook"></div>
+<!-- Global quiz controls -->
+<div class="quiz-bar">
+  <button class="quiz" id="startQuizUnified">🎓 Start Global Quiz</button>
+  <button class="quiz" id="startAudioQuiz">🎧 Start Audio Quiz</button>
+</div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<div id="quizUnifiedStep" class="muted" style="text-align:center;"></div>
+<div id="globalQuizBox" class="quiz-box" style="display:none;"></div>
+<div id="audioQuizBox" class="quiz-box" style="display:none;"></div>
 
-  <script>
-  const sections = [
-    { title:'Greetings', phrases:[
-      {id:'p1', pt:'Olá', en:'Hello'},
-      {id:'p2', pt:'Oi', en:'Hi'}
-    ]},
-    { title:'Times of Day', phrases:[
-      {id:'p3', pt:'Bom dia', en:'Good morning'},
-      {id:'p4', pt:'Boa tarde', en:'Good afternoon'},
-      {id:'p5', pt:'Boa noite', en:'Good evening / Good night'}
-    ]},
-    { title:'How Are You?', phrases:[
-      {id:'p6', pt:'Como estás?', en:'How are you?'},
-      {id:'p7', pt:'Estou bem, e tu?', en:"I'm fine, and you?"},
-      {id:'p8', pt:'Também estou bem', en:"I'm fine too"},
-      {id:'p9', pt:'Tudo bem?', en:'All good? / How are you?'},
-      {id:'p10', pt:'Sim, tudo bem, e contigo?', en:'Yes, all good, and you?'},
-      {id:'p11', pt:'Também está tudo bem', en:"Everything’s fine too"}
-    ]},
-    { title:'Names & Introductions', phrases:[
-      {id:'p12', pt:'Como te chamas?', en:"What's your name?"},
-      {id:'p13', pt:'Chamo-me…', en:'My name is…'},
-      {id:'p14', pt:'Eu sou o…', en:"I'm (male)…"},
-      {id:'p15', pt:'Qual é o teu nome?', en:"What's your name?"},
-      {id:'p16', pt:'O meu nome é…', en:'My name is…'}
-    ]},
-    { title:'Meeting Someone', phrases:[
-      {id:'p17', pt:'Prazer', en:'Pleasure'},
-      {id:'p18', pt:'Muito prazer', en:'Nice to meet you'},
-      {id:'p19', pt:'Prazer em te conhecer', en:'Nice to meet you'}
-    ]},
-    { title:"Where You're From & Where You Live", phrases:[
-      {id:'p20', pt:'De onde és?', en:'Where are you from?'},
-      {id:'p21', pt:'Eu sou da Escócia', en:"I'm from Scotland"},
-      {id:'p22', pt:'Aonde vives?', en:'Where do you live?'},
-      {id:'p23', pt:'Eu vivo na Escócia', en:'I live in Scotland'}
-    ]},
-    { title:'Age', phrases:[
-      {id:'p24', pt:'Quantos anos tens?', en:'How old are you?'},
-      {id:'p25', pt:'Eu tenho dezassete anos', en:"I'm seventeen years old"}
-    ]},
-    { title:'Work', phrases:[
-      {id:'p26', pt:'Qual é o teu trabalho?', en:"What's your job?"},
-      {id:'p27', pt:'Eu trabalho em tecnologia', en:'I work in technology'}
-    ]},
-    { title:'Likes & Activities', phrases:[
-      {id:'p28', pt:'O que é que gostas de fazer?', en:'What do you like to do?'},
-      {id:'p29', pt:'Eu gosto de viajar', en:'I like to travel'}
-    ]},
-    { title:'Farewells', phrases:[
-      {id:'p30', pt:'Foi um prazer', en:'It was a pleasure'},
-      {id:'p31', pt:'Fica bem e até à próxima', en:'Take care and see you next time'},
-      {id:'p32', pt:'Igualmente', en:'Likewise / Same to you'},
-      {id:'p33', pt:'Tu também', en:'You too'}
-    ]}
-  ];
+<div id="phrasebook"></div>
 
-  const container = document.getElementById('phrasebook');
+<!-- ZIP libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Basic Conversation 1 – Scott</title>
 
-  sections.forEach(section=>{
-    const secDiv=document.createElement('div');
-    const h2=document.createElement('h2');
-    const titleSpan=document.createElement('span'); titleSpan.textContent=section.title;
-    h2.appendChild(titleSpan);
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
 
-    const controls=document.createElement('div'); controls.className='section-controls';
+<style>
+  :root{
+    --blue:#0b69ff;
+    --blue-soft:#58a6ff;
+    --green:#17a34a;
+    --teal:#04695c;
+    --gray:#555;
+    --border:#e0e0e0;
+    --bg:#fafafa;
+    --card:#fff;
+  }
+  body{
+    font-family:'Open Sans',sans-serif;
+    background:var(--bg);color:#111;
+    padding:20px;max-width:900px;margin:auto;
+    line-height:1.6;
+  }
+  h1{
+    font-size:26px;text-align:center;
+    color:var(--blue);margin-bottom:10px;
+  }
+  h2{
+    font-size:20px;margin-top:30px;
+    padding-bottom:8px;border-bottom:2px solid var(--border);
+    display:flex;align-items:center;justify-content:space-between;
+    flex-wrap:wrap;
+  }
+  .section-controls{display:flex;gap:10px;flex-wrap:wrap}
 
-    const repeatBtn=document.createElement('button'); repeatBtn.className='repeat'; repeatBtn.textContent='Listen & Repeat Section';
-    repeatBtn.addEventListener('click',()=>repeatSection(section)); controls.appendChild(repeatBtn);
+  button{
+    padding:8px 14px;border:none;border-radius:6px;
+    cursor:pointer;font-size:14px;font-weight:600;
+    transition:background .3s;
+  }
+  button.play{background:var(--blue);color:#fff}
+  button.slow{background:var(--blue-soft);color:#fff}
+  button.repeat{background:var(--green);color:#fff}
+  button.download{background:var(--gray);color:#fff}
+  button.download.done{background:var(--green)}
+  button.quiz{background:var(--teal);color:#fff}
 
-    const downloadBtn=document.createElement('button'); downloadBtn.className='download'; downloadBtn.textContent='Download Section Audio';
-    downloadBtn.addEventListener('click',()=>downloadSection(section,h2)); controls.appendChild(downloadBtn);
+  table{
+    width:100%;border-collapse:collapse;margin-top:10px;
+    background:var(--card);border-radius:6px;overflow:hidden;
+  }
+  th,td{
+    padding:10px;text-align:left;border-bottom:1px solid #eee;
+  }
+  td.pt{font-weight:600;width:45%}
+  td.en{width:45%;color:#555}
+  td.actions{width:10%;text-align:center}
 
-    h2.appendChild(controls);
-    secDiv.appendChild(h2);
+  .progress-message{font-size:14px;color:var(--blue);margin-top:6px}
 
-    const progressMsg=document.createElement('div'); progressMsg.className='progress-message'; secDiv.appendChild(progressMsg);
+  .quiz-box{
+    margin-top:15px;padding:15px;
+    border:1px solid #ddd;border-radius:8px;
+    background:var(--card);
+  }
+  .quiz-question{font-weight:600;margin-bottom:10px}
+  .quiz-options{display:flex;flex-direction:column;gap:8px}
+  .quiz-options button{background:var(--blue);color:#fff}
+  .quiz-options button.correct{background:var(--green)!important}
+  .quiz-options button.wrong{background:#e53935!important}
 
-    const table=document.createElement('table');
-    const thead=document.createElement('thead'); thead.innerHTML='<tr><th>Português</th><th>English</th><th>Actions</th></tr>'; table.appendChild(thead);
-    const tbody=document.createElement('tbody');
-
-    section.phrases.forEach(ph=>{
-      const tr=document.createElement('tr');
-      const tdPt=document.createElement('td'); tdPt.className='pt'; tdPt.textContent=ph.pt;
-      const tdEn=document.createElement('td'); tdEn.className='en'; tdEn.textContent=ph.en;
-      const tdActions=document.createElement('td'); tdActions.className='actions';
-
-      const playBtn=document.createElement('button'); playBtn.className='play'; playBtn.textContent='Play';
-      playBtn.addEventListener('click',()=>playAudio(ph.id,1)); tdActions.appendChild(playBtn);
-
-      const slowBtn=document.createElement('button'); slowBtn.className='slow'; slowBtn.textContent='Slow';
-      slowBtn.addEventListener('click',()=>playAudio(ph.id,0.8)); tdActions.appendChild(slowBtn);
-
-      tr.appendChild(tdPt); tr.appendChild(tdEn); tr.appendChild(tdActions);
-      tbody.appendChild(tr);
-    });
-
-    table.appendChild(tbody);
-    secDiv.appendChild(table);
-    container.appendChild(secDiv);
-  });
-
-  function playAudio(id,rate=1){const a=new Audio('audio/'+id+'.mp3');a.playbackRate=rate;a.play();}
-  function repeatSection(section){
-    let i=0; const playNext=()=>{if(i<section.phrases.length){playAudio(section.phrases[i].id,1);i++;setTimeout(playNext,3000);}};
-    playNext();
+  .quiz-bar{
+    display:flex;gap:10px;flex-wrap:wrap;
+    justify-content:center;margin:18px 0 10px;
+  }
+  .mode-chooser{
+    display:flex;gap:10px;flex-wrap:wrap;
+    justify-content:center;margin-top:8px;
   }
 
-  const unifiedBtn=document.getElementById('startQuizUnified');
-  const unifiedStep=document.getElementById('quizUnifiedStep');
-  const globalQuizBox=document.getElementById('globalQuizBox');
-  let activeQuiz=null;
+  .muted{color:#666;font-size:13px}
+  .audio-buttons{display:flex;gap:10px;margin-bottom:10px}
 
-  unifiedBtn.addEventListener('click',()=>{
-    closeActiveQuiz();
-    globalQuizBox.style.display='none';
-    unifiedStep.innerHTML='';
-    showModeChooser(mode=>{
-      startQuiz({
-        mode,
-        phrases:sections.flatMap(s=>s.phrases),
-        container:globalQuizBox,
-        onBeforeStart:()=>{
-          closeActiveQuiz();
-          globalQuizBox.innerHTML='';
-          globalQuizBox.style.display='block';
-        }
-      });
-    });
+  @media (max-width:640px){
+    td.actions{text-align:left}
+  }
+</style>
+</head>
+<body>
+<h1>Basic Conversation 1 – Scott</h1>
+
+<p style="text-align:center;color:#444;max-width:700px;margin:auto;">
+  Practice introductory European Portuguese conversation phrases. Listen, repeat, download audio, or test yourself with the global quiz or audio quiz.
+</p>
+
+<!-- Quiz controls -->
+<div class="quiz-bar">
+  <button class="quiz" id="startQuizUnified">🎓 Start Global Quiz</button>
+  <button class="quiz" id="startAudioQuiz">🎧 Start Audio Quiz</button>
+</div>
+
+<div id="quizUnifiedStep" class="muted" style="text-align:center;"></div>
+<div id="globalQuizBox" class="quiz-box" style="display:none;"></div>
+<div id="audioQuizBox" class="quiz-box" style="display:none;"></div>
+
+<div id="phrasebook"></div>
+
+<!-- ZIP libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+<script>
+// ------------------------------
+// Scott's sections (with Farewells)
+// ------------------------------
+const sections = [
+  { title:'Greetings', phrases:[
+    {id:'p1', pt:'Olá', en:'Hello'},
+    {id:'p2', pt:'Oi', en:'Hi'}
+  ]},
+  { title:'Times of Day', phrases:[
+    {id:'p3', pt:'Bom dia', en:'Good morning'},
+    {id:'p4', pt:'Boa tarde', en:'Good afternoon'},
+    {id:'p5', pt:'Boa noite', en:'Good evening / Good night'}
+  ]},
+  { title:'How Are You?', phrases:[
+    {id:'p6', pt:'Como estás?', en:'How are you?'},
+    {id:'p7', pt:'Estou bem, e tu?', en:"I'm fine, and you?"},
+    {id:'p8', pt:'Também estou bem', en:"I'm fine too"},
+    {id:'p9', pt:'Tudo bem?', en:'All good? / How are you?'},
+    {id:'p10', pt:'Sim, tudo bem, e contigo?', en:'Yes, all good, and you?'},
+    {id:'p11', pt:'Também está tudo bem', en:"Everything’s fine too"}
+  ]},
+  { title:'Names & Introductions', phrases:[
+    {id:'p12', pt:'Como te chamas?', en:"What's your name?"},
+    {id:'p13', pt:'Chamo-me…', en:'My name is…'},
+    {id:'p14', pt:'Eu sou o…', en:"I'm (male)…"},
+    {id:'p15', pt:'Qual é o teu nome?', en:"What's your name?"},
+    {id:'p16', pt:'O meu nome é…', en:'My name is…'}
+  ]},
+  { title:'Meeting Someone', phrases:[
+    {id:'p17', pt:'Prazer', en:'Pleasure'},
+    {id:'p18', pt:'Muito prazer', en:'Nice to meet you'},
+    {id:'p19', pt:'Prazer em te conhecer', en:'Nice to meet you'}
+  ]},
+  { title:"Where You're From & Where You Live", phrases:[
+    {id:'p20', pt:'De onde és?', en:'Where are you from?'},
+    {id:'p21', pt:'Eu sou da Escócia', en:"I'm from Scotland"},
+    {id:'p22', pt:'Aonde vives?', en:'Where do you live?'},
+    {id:'p23', pt:'Eu vivo na Escócia', en:'I live in Scotland'}
+  ]},
+  { title:'Age', phrases:[
+    {id:'p24', pt:'Quantos anos tens?', en:'How old are you?'},
+    {id:'p25', pt:'Eu tenho dezassete anos', en:"I'm seventeen years old"}
+  ]},
+  { title:'Work', phrases:[
+    {id:'p26', pt:'Qual é o teu trabalho?', en:"What's your job?"},
+    {id:'p27', pt:'Eu trabalho em tecnologia', en:'I work in technology'}
+  ]},
+  { title:'Likes & Activities', phrases:[
+    {id:'p28', pt:'O que é que gostas de fazer?', en:'What do you like to do?'},
+    {id:'p29', pt:'Eu gosto de viajar', en:'I like to travel'}
+  ]},
+  { title:'Farewells', phrases:[
+    {id:'p30', pt:'Foi um prazer', en:'It was a pleasure'},
+    {id:'p31', pt:'Fica bem e até à próxima', en:'Take care and see you next time'},
+    {id:'p32', pt:'Igualmente', en:'Likewise / Same to you'},
+    {id:'p33', pt:'Tu também', en:'You too'}
+  ]}
+];
+
+const container = document.getElementById('phrasebook');
+
+// ------------------------------
+// Render sections and tables
+// ------------------------------
+sections.forEach(section=>{
+  const secDiv=document.createElement('div');
+  const h2=document.createElement('h2');
+  const titleSpan=document.createElement('span'); 
+  titleSpan.textContent=section.title;
+  h2.appendChild(titleSpan);
+
+  const controls=document.createElement('div');
+  controls.className='section-controls';
+
+  const repeatBtn=document.createElement('button');
+  repeatBtn.className='repeat';
+  repeatBtn.textContent='Listen & Repeat Section';
+  repeatBtn.addEventListener('click',()=>repeatSection(section));
+  controls.appendChild(repeatBtn);
+
+  const downloadBtn=document.createElement('button');
+  downloadBtn.className='download';
+  downloadBtn.textContent='Download Section Audio';
+  downloadBtn.addEventListener('click',()=>downloadSection(section,h2));
+  controls.appendChild(downloadBtn);
+
+  h2.appendChild(controls);
+  secDiv.appendChild(h2);
+
+  const progressMsg=document.createElement('div');
+  progressMsg.className='progress-message';
+  secDiv.appendChild(progressMsg);
+
+  const table=document.createElement('table');
+  const thead=document.createElement('thead');
+  thead.innerHTML='<tr><th>Português</th><th>English</th><th>Actions</th></tr>';
+  table.appendChild(thead);
+
+  const tbody=document.createElement('tbody');
+
+  section.phrases.forEach(ph=>{
+    const tr=document.createElement('tr');
+
+    const tdPt=document.createElement('td');
+    tdPt.className='pt';
+    tdPt.textContent=ph.pt;
+
+    const tdEn=document.createElement('td');
+    tdEn.className='en';
+    tdEn.textContent=ph.en;
+
+    const tdActions=document.createElement('td');
+    tdActions.className='actions';
+
+    const playBtn=document.createElement('button');
+    playBtn.className='play';
+    playBtn.textContent='Play';
+    playBtn.addEventListener('click',()=>playAudio(ph.id,1));
+    tdActions.appendChild(playBtn);
+
+    const slowBtn=document.createElement('button');
+    slowBtn.className='slow';
+    slowBtn.textContent='Slow';
+    slowBtn.addEventListener('click',()=>playAudio(ph.id,0.8));
+    tdActions.appendChild(slowBtn);
+
+    tr.appendChild(tdPt);
+    tr.appendChild(tdEn);
+    tr.appendChild(tdActions);
+    tbody.appendChild(tr);
   });
 
-  function showModeChooser(onChoose){
-    const modeWrap=document.createElement('div');
-    modeWrap.className='mode-chooser';
-    modeWrap.innerHTML=`
-      <button class="quiz" data-mode="pt-en">🇵🇹 Portuguese → English</button>
-      <button class="quiz" data-mode="en-pt">🇬🇧 English → Portuguese</button>
-      <button class="quiz" data-mode="mix">🔄 Mixed</button>`;
-    unifiedStep.innerHTML='';
-    unifiedStep.appendChild(modeWrap);
-    modeWrap.querySelectorAll('button').forEach(b=>{
-      b.addEventListener('click',()=>{
-        const mode=b.dataset.mode;
-        unifiedStep.innerHTML='';
-        onChoose(mode);
-      });
-    });
-  }
+  table.appendChild(tbody);
+  secDiv.appendChild(table);
+  container.appendChild(secDiv);
+});
 
-  function startQuiz({mode,phrases,container,onBeforeStart}){
-    if(onBeforeStart) onBeforeStart();
-    const state={idx:0,score:0,list:shuffle(phrases.slice()),stop(){container.style.display='none';container.innerHTML='';}};
-    closeActiveQuiz(); activeQuiz=state;
-    container.innerHTML='';
-    const qEl=document.createElement('div'); qEl.className='quiz-question';
-    const optsEl=document.createElement('div'); optsEl.className='quiz-options';
-    const ctrEl=document.createElement('div'); ctrEl.className='muted'; ctrEl.style.marginTop='10px';
-    const nextWrap=document.createElement('div'); nextWrap.style.marginTop='10px';
-    const nextBtn=document.createElement('button'); nextBtn.className='quiz'; nextBtn.textContent='Next'; nextBtn.style.display='none';
-    nextWrap.appendChild(nextBtn);
-    container.appendChild(qEl); container.appendChild(optsEl); container.appendChild(ctrEl); container.appendChild(nextWrap);
+// ------------------------------
+// Audio helpers
+// ------------------------------
+function playAudio(id,rate=1){
+  const a=new Audio('audio/'+id+'.mp3');
+  a.playbackRate=rate;
+  a.play();
+}
 
-    function renderQuestion(){
-      if(state.idx>=state.list.length){
-        qEl.textContent=`✅ Quiz complete! You scored ${state.score} / ${state.list.length}.`;
-        optsEl.innerHTML=''; nextBtn.textContent='Close'; nextBtn.style.display='inline-block'; nextBtn.onclick=()=>{closeActiveQuiz();}; return;
-      }
-      const item=state.list[state.idx];
-      let dir=mode==='mix'?(Math.random()>0.5?'pt-en':'en-pt'):mode;
-      const isPtEn=(dir==='pt-en');
-      const questionText=isPtEn?item.pt:item.en;
-      const correct=isPtEn?item.en:item.pt;
-      const pool=isPtEn?state.list.map(p=>p.en):state.list.map(p=>p.pt);
-      const options=generateOptions(correct,pool);
-      qEl.textContent=questionText; optsEl.innerHTML=''; ctrEl.textContent=`Question ${state.idx+1} of ${state.list.length}`;
-      options.forEach(opt=>{
-        const b=document.createElement('button'); b.textContent=opt;
-        b.addEventListener('click',()=>{
-          Array.from(optsEl.children).forEach(btn=>btn.disabled=true);
-          if(opt===correct){b.classList.add('correct');state.score++;}else{
-            b.classList.add('wrong');
-            Array.from(optsEl.children).forEach(btn=>{if(btn.textContent===correct)btn.classList.add('correct');});
-          }
-          nextBtn.style.display='inline-block'; nextBtn.onclick=()=>{nextBtn.style.display='none';state.idx++;renderQuestion();};
-        });
-        optsEl.appendChild(b);
-      });
+function repeatSection(section){
+  let i=0;
+  const playNext=()=>{
+    if(i<section.phrases.length){
+      playAudio(section.phrases[i].id,1);
+      i++;
+      setTimeout(playNext,3000);
     }
-    renderQuestion();
+  };
+  playNext();
+}
+
+// ------------------------------
+// Utility helpers
+// ------------------------------
+function shuffle(arr){
+  return arr.sort(()=>Math.random()-0.5);
+}
+function generateOptions(correct,pool){
+  const set=new Set([correct]);
+  while(set.size<4){
+    const c=pool[Math.floor(Math.random()*pool.length)];
+    set.add(c);
+  }
+  return shuffle(Array.from(set));
+}
+
+// ------------------------------
+// TEXT QUIZ (existing global quiz)
+// ------------------------------
+const unifiedBtn=document.getElementById('startQuizUnified');
+const unifiedStep=document.getElementById('quizUnifiedStep');
+const globalQuizBox=document.getElementById('globalQuizBox');
+const audioQuizBox=document.getElementById('audioQuizBox');
+
+let activeTextQuiz=null;
+let activeAudioQuiz=null;
+
+unifiedBtn.addEventListener('click',()=>{
+  closeAudioQuiz();
+  globalQuizBox.style.display='none';
+  unifiedStep.innerHTML='';
+  showModeChooser(mode=>{
+    startTextQuiz({
+      mode,
+      phrases:sections.flatMap(s=>s.phrases),
+      container:globalQuizBox,
+      onBeforeStart:()=>{
+        closeTextQuiz();
+        globalQuizBox.innerHTML='';
+        globalQuizBox.style.display='block';
+      }
+    });
+  });
+});
+
+function showModeChooser(onChoose){
+  const modeWrap=document.createElement('div');
+  modeWrap.className='mode-chooser';
+  modeWrap.innerHTML=`
+    <button class="quiz" data-mode="pt-en">🇵🇹 Portuguese → English</button>
+    <button class="quiz" data-mode="en-pt">🇬🇧 English → Portuguese</button>
+    <button class="quiz" data-mode="mix">🔄 Mixed</button>
+  `;
+  unifiedStep.innerHTML='';
+  unifiedStep.appendChild(modeWrap);
+  modeWrap.querySelectorAll('button').forEach(b=>{
+    b.addEventListener('click',()=>{
+      const mode=b.dataset.mode;
+      unifiedStep.innerHTML='';
+      onChoose(mode);
+    });
+  });
+}
+
+function startTextQuiz({mode,phrases,container,onBeforeStart}){
+  if(onBeforeStart) onBeforeStart();
+  const state={
+    idx:0,
+    score:0,
+    list:shuffle(phrases.slice()),
+    stop(){
+      container.style.display='none';
+      container.innerHTML='';
+    }
+  };
+  closeTextQuiz();
+  activeTextQuiz=state;
+
+  container.innerHTML='';
+
+  const qEl=document.createElement('div');
+  qEl.className='quiz-question';
+
+  const optsEl=document.createElement('div');
+  optsEl.className='quiz-options';
+
+  const ctrEl=document.createElement('div');
+  ctrEl.className='muted';
+  ctrEl.style.marginTop='10px';
+
+  const nextWrap=document.createElement('div');
+  nextWrap.style.marginTop='10px';
+
+  const nextBtn=document.createElement('button');
+  nextBtn.className='quiz';
+  nextBtn.textContent='Next';
+  nextBtn.style.display='none';
+
+  nextWrap.appendChild(nextBtn);
+  container.appendChild(qEl);
+  container.appendChild(optsEl);
+  container.appendChild(ctrEl);
+  container.appendChild(nextWrap);
+
+  function renderQuestion(){
+    if(state.idx>=state.list.length){
+      qEl.textContent=`✅ Quiz complete! You scored ${state.score} / ${state.list.length}.`;
+      optsEl.innerHTML='';
+      nextBtn.textContent='Close';
+      nextBtn.style.display='inline-block';
+      nextBtn.onclick=()=>{closeTextQuiz();};
+      return;
+    }
+
+    const item=state.list[state.idx];
+    let dir=mode==='mix'?(Math.random()>0.5?'pt-en':'en-pt'):mode;
+    const isPtEn=(dir==='pt-en');
+
+    const questionText=isPtEn?item.pt:item.en;
+    const correct=isPtEn?item.en:item.pt;
+    const pool=isPtEn?state.list.map(p=>p.en):state.list.map(p=>p.pt);
+    const options=generateOptions(correct,pool);
+
+    qEl.textContent=questionText;
+    optsEl.innerHTML='';
+    ctrEl.textContent=`Question ${state.idx+1} of ${state.list.length}`;
+
+    options.forEach(opt=>{
+      const b=document.createElement('button');
+      b.textContent=opt;
+      b.addEventListener('click',()=>{
+        Array.from(optsEl.children).forEach(btn=>btn.disabled=true);
+        if(opt===correct){
+          b.classList.add('correct');
+          state.score++;
+        }else{
+          b.classList.add('wrong');
+          Array.from(optsEl.children).forEach(btn=>{
+            if(btn.textContent===correct) btn.classList.add('correct');
+          });
+        }
+        nextBtn.style.display='inline-block';
+        nextBtn.onclick=()=>{
+          nextBtn.style.display='none';
+          state.idx++;
+          renderQuestion();
+        };
+      });
+      optsEl.appendChild(b);
+    });
   }
 
-  function closeActiveQuiz(){if(activeQuiz&&typeof activeQuiz.stop==='function')activeQuiz.stop();activeQuiz=null;}
-  function generateOptions(correct,pool){const set=new Set([correct]);while(set.size<4){const c=pool[Math.floor(Math.random()*pool.length)];set.add(c);}return Array.from(set).sort(()=>Math.random()-0.5);}
-  function shuffle(arr){return arr.sort(()=>Math.random()-0.5);}
-  </script>
+  renderQuestion();
+}
+
+function closeTextQuiz(){
+  if(activeTextQuiz && typeof activeTextQuiz.stop==='function'){
+    activeTextQuiz.stop();
+  }
+  activeTextQuiz=null;
+}
+
+// ------------------------------
+// AUDIO QUIZ (PT audio → EN options)
+// ------------------------------
+const startAudioQuizBtn=document.getElementById('startAudioQuiz');
+let currentAudio=null;
+
+startAudioQuizBtn.addEventListener('click',()=>{
+  closeTextQuiz();
+  startAudioQuiz();
+});
+
+function startAudioQuiz(){
+  const container=audioQuizBox;
+  container.style.display='block';
+  container.innerHTML='';
+
+  const state={
+    list:shuffle(sections.flatMap(s=>s.phrases).slice()),
+    idx:0,
+    score:0,
+    stop(){
+      container.style.display='none';
+      container.innerHTML='';
+      stopCurrentAudio();
+    }
+  };
+  closeAudioQuiz();
+  activeAudioQuiz=state;
+
+  const qEl=document.createElement('div');
+  qEl.className='quiz-question';
+  qEl.textContent='Listen to the phrase in Portuguese and choose the correct English meaning.';
+  container.appendChild(qEl);
+
+  const audioBtns=document.createElement('div');
+  audioBtns.className='audio-buttons';
+
+  const playBtn=document.createElement('button');
+  playBtn.textContent='▶️ Play audio';
+
+  const replayBtn=document.createElement('button');
+  replayBtn.textContent='🔁 Replay audio';
+
+  audioBtns.appendChild(playBtn);
+  audioBtns.appendChild(replayBtn);
+  container.appendChild(audioBtns);
+
+  const optsEl=document.createElement('div');
+  optsEl.className='quiz-options';
+  container.appendChild(optsEl);
+
+  const infoEl=document.createElement('div');
+  infoEl.className='muted';
+  infoEl.style.marginTop='10px';
+  container.appendChild(infoEl);
+
+  const nextBtn=document.createElement('button');
+  nextBtn.className='quiz';
+  nextBtn.textContent='Next';
+  nextBtn.style.display='none';
+  nextBtn.style.marginTop='10px';
+  container.appendChild(nextBtn);
+
+  function renderAudioQuestion(){
+    optsEl.innerHTML='';
+    nextBtn.style.display='none';
+
+    if(state.idx>=state.list.length){
+      qEl.textContent=`✅ Audio quiz complete! You scored ${state.score} / ${state.list.length}.`;
+      audioBtns.style.display='none';
+      infoEl.textContent='';
+      return;
+    }
+
+    const item=state.list[state.idx];
+    const correct=item.en;
+    const pool=state.list.map(p=>p.en);
+    const options=generateOptions(correct,pool);
+
+    infoEl.textContent=`Question ${state.idx+1} of ${state.list.length}`;
+
+    // Attach audio handlers
+    playBtn.onclick=()=>{
+      playQuizAudio(item.id);
+    };
+    replayBtn.onclick=()=>{
+      replayQuizAudio();
+    };
+
+    options.forEach(opt=>{
+      const b=document.createElement('button');
+      b.textContent=opt;
+      b.addEventListener('click',()=>{
+        Array.from(optsEl.children).forEach(btn=>btn.disabled=true);
+        if(opt===correct){
+          b.classList.add('correct');
+          state.score++;
+        }else{
+          b.classList.add('wrong');
+          Array.from(optsEl.children).forEach(btn=>{
+            if(btn.textContent===correct) btn.classList.add('correct');
+          });
+        }
+        nextBtn.style.display='inline-block';
+        nextBtn.onclick=()=>{
+          nextBtn.style.display='none';
+          state.idx++;
+          renderAudioQuestion();
+        };
+      });
+      optsEl.appendChild(b);
+    });
+  }
+
+  renderAudioQuestion();
+}
+
+function playQuizAudio(id){
+  stopCurrentAudio();
+  currentAudio=new Audio('audio/'+id+'.mp3');
+  currentAudio.play();
+}
+
+function replayQuizAudio(){
+  if(currentAudio){
+    currentAudio.currentTime=0;
+    currentAudio.play();
+  }
+}
+
+function stopCurrentAudio(){
+  if(currentAudio){
+    currentAudio.pause();
+    currentAudio.currentTime=0;
+    currentAudio=null;
+  }
+}
+
+function closeAudioQuiz(){
+  if(activeAudioQuiz && typeof activeAudioQuiz.stop==='function'){
+    activeAudioQuiz.stop();
+  }
+  activeAudioQuiz=null;
+}
+
+// ------------------------------
+// Download section audio as ZIP
+// ------------------------------
+async function downloadSection(section,header){
+  const zip=new JSZip();
+  const msg=header.nextElementSibling;
+  const btn=header.querySelector('.download');
+
+  msg.textContent='Preparing ZIP...';
+  btn.disabled=true;
+
+  const total=section.phrases.length;
+  let done=0;
+
+  for(const ph of section.phrases){
+    const fname=sanitizeFilename(ph.pt)+'.mp3';
+    const url='audio/'+ph.id+'.mp3';
+    try{
+      const r=await fetch(url);
+      if(!r.ok) throw new Error();
+      const blob=await r.blob();
+      zip.file(fname,blob);
+      done++;
+      msg.textContent=`Preparing ZIP... ${Math.round(done/total*100)}%`;
+    }catch(e){
+      msg.textContent=`⚠️ Missing file: ${ph.id}.mp3`;
+    }
+  }
+
+  const content=await zip.generateAsync({type:'blob'},m=>{
+    msg.textContent=`Compressing... ${Math.round(m.percent)}%`;
+  });
+
+  saveAs(content,section.title.replace(/\s+/g,'_')+'.zip');
+  msg.textContent='✅ Download ready!';
+  btn.classList.add('done');
+  btn.disabled=false;
+
+  setTimeout(()=>{
+    msg.textContent='';
+    btn.classList.remove('done');
+  },4000);
+}
+
+function sanitizeFilename(s){
+  return s
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^\w\s-]/g,'')
+    .trim()
+    .replace(/\s+/g,'_');
+}
+</script>
+
 </body>
 </html>
