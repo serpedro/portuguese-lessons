@@ -1,1 +1,2194 @@
-ptguide html code
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Phonetics, Basic Conversation & Ordering</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --blue:#0b69ff;
+    --blue-soft:#58a6ff;
+    --green:#17a34a;
+    --teal:#04695c;
+    --gray:#555;
+    --border:#e0e0e0;
+    --bg:#fafafa;
+    --card:#fff;
+  }
+
+  body{
+    font-family:'Open Sans',sans-serif;
+    background:var(--bg);
+    color:#111;
+    padding:20px;
+    max-width:900px;
+    margin:auto;
+    line-height:1.6;
+  }
+
+  /* Main tabs */
+  .tabs{
+    display:flex;
+    gap:8px;
+    margin-bottom:20px;
+    border-bottom:1px solid var(--border);
+    flex-wrap:wrap;
+  }
+  .tab{
+    padding:8px 16px;
+    border:none;
+    background:#e8f0ff;
+    cursor:pointer;
+    border-radius:6px 6px 0 0;
+    font-weight:600;
+    font-size:14px;
+  }
+  .tab.active{
+    background:#ffffff;
+    border-bottom:2px solid var(--blue);
+  }
+  .tab-panel{
+    display:none;
+  }
+  .tab-panel.active{
+    display:block;
+  }
+
+  /* Sub-tabs (phonetics + basic) */
+  .subtabs{
+    display:flex;
+    gap:6px;
+    margin:10px 0 15px;
+    flex-wrap:wrap;
+  }
+  .subtab{
+    padding:6px 12px;
+    border:none;
+    background:#f0f4ff;
+    cursor:pointer;
+    border-radius:999px;
+    font-size:13px;
+    font-weight:600;
+  }
+  .subtab.active{
+    background:var(--blue);
+    color:#fff;
+  }
+  .subpanel{
+    display:none;
+  }
+  .subpanel.active{
+    display:block;
+  }
+
+  h1{
+    font-size:26px;
+    text-align:center;
+    color:var(--blue);
+    margin-bottom:10px;
+  }
+
+  h2{
+    font-size:20px;
+    margin-top:30px;
+    padding-bottom:8px;
+    border-bottom:2px solid var(--border);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+  }
+
+  h3{
+    font-size:18px;
+    margin-top:18px;
+    margin-bottom:6px;
+  }
+
+  .section-controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+
+  button{
+    padding:8px 14px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:14px;
+    font-weight:600;
+    transition:background .2s,transform .1s;
+  }
+  button:hover{transform:translateY(-1px);}
+  button.play{background:var(--blue);color:#fff}
+  button.slow{background:var(--blue-soft);color:#fff}
+  button.repeat{background:var(--green);color:#fff}
+  button.download{background:var(--gray);color:#fff}
+  button.download.done{background:var(--green)}
+  button.quiz{background:var(--teal);color:#fff}
+
+  /* tiny play buttons in tables */
+  .play-mini{
+    margin-left:6px;
+    padding:2px 6px;
+    font-size:11px;
+    border-radius:4px;
+    background:var(--blue);
+    color:#fff;
+    border:none;
+    cursor:pointer;
+  }
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+    background:var(--card);
+    border-radius:6px;
+    overflow:hidden;
+  }
+  th,td{
+    padding:10px;
+    text-align:left;
+    border-bottom:1px solid #eee;
+    vertical-align:middle;
+  }
+  th{
+    background:#f3f3f3;
+    font-weight:600;
+  }
+  td.pt{font-weight:600;width:45%}
+  td.en{width:45%;color:#555}
+  td.actions{width:10%;text-align:center}
+
+  .progress-message{font-size:14px;color:var(--blue);margin-top:6px}
+
+  .quiz-bar{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    justify-content:center;
+    margin:18px 0 10px;
+  }
+
+  .quiz-box{
+    margin-top:15px;
+    padding:15px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    background:var(--card);
+  }
+  .quiz-question{font-weight:600;margin-bottom:10px}
+  .quiz-options{display:flex;flex-direction:column;gap:8px}
+  .quiz-options button{background:var(--blue);color:#fff}
+  .quiz-options button.correct{background:var(--green)!important}
+  .quiz-options button.wrong{background:#e53935!important}
+
+  .mode-chooser{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    justify-content:center;
+    margin-top:8px;
+  }
+
+  .muted{color:#666;font-size:13px}
+  .audio-buttons{display:flex;gap:10px;margin-bottom:10px}
+
+  p.intro{
+    text-align:center;
+    color:#444;
+    max-width:700px;
+    margin:0 auto 10px auto;
+  }
+
+  /* Flashcards (Ordering tab) */
+  .flashcard-section{margin-top:30px;}
+  .flashcard-controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    justify-content:center;
+    margin:10px 0 15px;
+  }
+  .flashcard{
+    background:var(--card);
+    border-radius:10px;
+    box-shadow:0 2px 6px rgba(0,0,0,0.08);
+    padding:16px;
+    text-align:center;
+    max-width:420px;
+    margin:0 auto 10px auto;
+  }
+  .flashcard img{
+    max-width:100%;
+    max-height:220px;
+    object-fit:cover;
+    display:block;
+    margin:0 auto 10px;
+    border-radius:10px;
+  }
+  .flashcard-text-main{
+    font-size:20px;
+    font-weight:600;
+    margin-bottom:4px;
+  }
+  .flashcard-text-sub{
+    font-size:16px;
+    color:#444;
+  }
+  .flashcard-index{
+    font-size:13px;
+    color:#777;
+    margin-top:6px;
+  }
+  .flashcard-audio{
+    margin-top:8px;
+    display:flex;
+    justify-content:center;
+    gap:8px;
+  }
+
+  /* Roleplay (Ordering tab) */
+  .dialogue{
+    background:var(--card);
+    border-radius:10px;
+    padding:12px 14px;
+    border-left:4px solid var(--blue);
+    margin-bottom:14px;
+  }
+  .dialogue p{margin:4px 0;}
+  .dialogue span.speaker{font-weight:600;color:var(--teal);}
+
+  @media (max-width:640px){
+    td.actions{text-align:left}
+  }
+</style>
+
+<!-- ZIP helpers -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+</head>
+
+<body>
+
+<!-- MAIN TABS -->
+<div class="tabs">
+  <button class="tab active" data-tab="phonetics">Phonetics</button>
+  <button class="tab" data-tab="basic">Basic Conversation</button>
+  <button class="tab" data-tab="ordering">Ordering (Restaurant & Café)</button>
+</div>
+
+<!-- TAB 1: PHONETICS -->
+<div id="tab-phonetics" class="tab-panel active">
+  <h1>European Portuguese Phonetics</h1>
+
+  <div class="subtabs">
+    <button class="subtab subtab-phon active" data-subtab="cons">Consonants</button>
+    <button class="subtab subtab-phon" data-subtab="vowels">Vowels</button>
+  </div>
+
+  <!-- SUBTAB: CONSONANTS -->
+  <div id="sub-cons" class="subpanel active">
+    <p class="intro">
+      Use these tables to see the main consonant sounds of European Portuguese. Click the small play
+      buttons to hear each sound or example.
+    </p>
+
+    <!-- BASIC CONSONANTS -->
+    <h2>Basic consonant sounds</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Letter</th>
+          <th>IPA</th>
+          <th>Portuguese example</th>
+          <th>English hint</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>B</td>
+          <td>/b/ <button class="play-mini" onclick="playAudio('ph-c-ipa-b')">▶</button></td>
+          <td><em>b</em>ola <button class="play-mini" onclick="playAudio('ph-c-ex-b')">▶</button></td>
+          <td><em>b</em>oy</td>
+        </tr>
+        <tr>
+          <td>D</td>
+          <td>/d/ <button class="play-mini" onclick="playAudio('ph-c-ipa-d')">▶</button></td>
+          <td><em>d</em>ia <button class="play-mini" onclick="playAudio('ph-c-ex-d')">▶</button></td>
+          <td><em>d</em>ay</td>
+        </tr>
+        <tr>
+          <td>F</td>
+          <td>/f/ <button class="play-mini" onclick="playAudio('ph-c-ipa-f')">▶</button></td>
+          <td><em>f</em>alar <button class="play-mini" onclick="playAudio('ph-c-ex-f')">▶</button></td>
+          <td><em>f</em>ind</td>
+        </tr>
+        <tr>
+          <td>L</td>
+          <td>/l/ <button class="play-mini" onclick="playAudio('ph-c-ipa-l')">▶</button></td>
+          <td><em>l</em>ado <button class="play-mini" onclick="playAudio('ph-c-ex-l')">▶</button></td>
+          <td><em>l</em>ike</td>
+        </tr>
+        <tr>
+          <td>M</td>
+          <td>/m/ <button class="play-mini" onclick="playAudio('ph-c-ipa-m')">▶</button></td>
+          <td><em>m</em>ão <button class="play-mini" onclick="playAudio('ph-c-ex-m')">▶</button></td>
+          <td><em>m</em>an (but often nasal)</td>
+        </tr>
+        <tr>
+          <td>N</td>
+          <td>/n/ <button class="play-mini" onclick="playAudio('ph-c-ipa-n')">▶</button></td>
+          <td><em>n</em>ome <button class="play-mini" onclick="playAudio('ph-c-ex-n')">▶</button></td>
+          <td><em>n</em>ame</td>
+        </tr>
+        <tr>
+          <td>P</td>
+          <td>/p/ <button class="play-mini" onclick="playAudio('ph-c-ipa-p')">▶</button></td>
+          <td><em>p</em>ão <button class="play-mini" onclick="playAudio('ph-c-ex-p')">▶</button></td>
+          <td><em>p</em>en</td>
+        </tr>
+        <tr>
+          <td>Q</td>
+          <td>/k/ <button class="play-mini" onclick="playAudio('ph-c-ipa-q')">▶</button></td>
+          <td><em>q</em>ual <button class="play-mini" onclick="playAudio('ph-c-ex-q')">▶</button></td>
+          <td>hard <em>c</em> in “car”</td>
+        </tr>
+        <tr>
+          <td>S</td>
+          <td>/s/ <button class="play-mini" onclick="playAudio('ph-c-ipa-s')">▶</button></td>
+          <td><em>s</em>ocial <button class="play-mini" onclick="playAudio('ph-c-ex-s')">▶</button></td>
+          <td><em>s</em>ee</td>
+        </tr>
+        <tr>
+          <td>Z</td>
+          <td>/z/ <button class="play-mini" onclick="playAudio('ph-c-ipa-z')">▶</button></td>
+          <td><em>z</em>elo <button class="play-mini" onclick="playAudio('ph-c-ex-z')">▶</button></td>
+          <td><em>z</em>oo</td>
+        </tr>
+        <tr>
+          <td>T</td>
+          <td>/t/ <button class="play-mini" onclick="playAudio('ph-c-ipa-t')">▶</button></td>
+          <td><em>t</em>arde <button class="play-mini" onclick="playAudio('ph-c-ex-t')">▶</button></td>
+          <td><em>t</em>en</td>
+        </tr>
+        <tr>
+          <td>V</td>
+          <td>/v/ <button class="play-mini" onclick="playAudio('ph-c-ipa-v')">▶</button></td>
+          <td><em>v</em>ida <button class="play-mini" onclick="playAudio('ph-c-ex-v')">▶</button></td>
+          <td><em>v</em>oice</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- C, G, Ç, J, H, R -->
+    <h2>C, G, Ç, J, H and R</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Letter</th>
+          <th>Followed by</th>
+          <th>IPA</th>
+          <th>Portuguese example</th>
+          <th>English hint</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>C</td>
+          <td>A, O, U</td>
+          <td>/k/ <button class="play-mini" onclick="playAudio('ph-c-ipa-ca')">▶</button></td>
+          <td><em>c</em>asa, <em>c</em>opo, <em>c</em>ultura
+            <button class="play-mini" onclick="playAudio('ph-c-ex-ca')">▶</button>
+          </td>
+          <td>hard <em>c</em> as in “car”</td>
+        </tr>
+        <tr>
+          <td>C</td>
+          <td>E, I</td>
+          <td>/s/ <button class="play-mini" onclick="playAudio('ph-c-ipa-ce')">▶</button></td>
+          <td><em>c</em>edo, <em>c</em>idade
+            <button class="play-mini" onclick="playAudio('ph-c-ex-ce')">▶</button>
+          </td>
+          <td><em>s</em> in “see”</td>
+        </tr>
+        <tr>
+          <td>Ç</td>
+          <td>–</td>
+          <td>/s/ <button class="play-mini" onclick="playAudio('ph-c-ipa-cced')">▶</button></td>
+          <td>fa<em>ç</em>a, servi<em>ç</em>o
+            <button class="play-mini" onclick="playAudio('ph-c-ex-cced')">▶</button>
+          </td>
+          <td><em>s</em> in “see”</td>
+        </tr>
+        <tr>
+          <td>G</td>
+          <td>A, O, U</td>
+          <td>/g/ <button class="play-mini" onclick="playAudio('ph-c-ipa-ga')">▶</button></td>
+          <td><em>g</em>ato, <em>g</em>ol, <em>g</em>uerra
+            <button class="play-mini" onclick="playAudio('ph-c-ex-ga')">▶</button>
+          </td>
+          <td><em>g</em> in “go”</td>
+        </tr>
+        <tr>
+          <td>G</td>
+          <td>E, I</td>
+          <td>/ʒ/ <button class="play-mini" onclick="playAudio('ph-c-ipa-ge')">▶</button></td>
+          <td><em>g</em>ente, <em>g</em>iro
+            <button class="play-mini" onclick="playAudio('ph-c-ex-ge')">▶</button>
+          </td>
+          <td>“zh” as in “vision”</td>
+        </tr>
+        <tr>
+          <td>J</td>
+          <td>–</td>
+          <td>/ʒ/ <button class="play-mini" onclick="playAudio('ph-c-ipa-j')">▶</button></td>
+          <td><em>j</em>antar, <em>j</em>aneiro
+            <button class="play-mini" onclick="playAudio('ph-c-ex-j')">▶</button>
+          </td>
+          <td>“zh” as in “vision”</td>
+        </tr>
+        <tr>
+          <td>H</td>
+          <td>start</td>
+          <td>silent <button class="play-mini" onclick="playAudio('ph-c-ipa-h')">▶</button></td>
+          <td><em>h</em>oje, <em>h</em>ora
+            <button class="play-mini" onclick="playAudio('ph-c-ex-h')">▶</button>
+          </td>
+          <td>no sound</td>
+        </tr>
+        <tr>
+          <td>R</td>
+          <td>start / rr</td>
+          <td>/ʁ/ <button class="play-mini" onclick="playAudio('ph-c-ipa-r-strong')">▶</button></td>
+          <td><em>r</em>ua, ca<em>rr</em>o
+            <button class="play-mini" onclick="playAudio('ph-c-ex-r-strong')">▶</button>
+          </td>
+          <td>guttural “r”, like French</td>
+        </tr>
+        <tr>
+          <td>R</td>
+          <td>between vowels</td>
+          <td>/ɾ/ <button class="play-mini" onclick="playAudio('ph-c-ipa-r-soft')">▶</button></td>
+          <td>ca<em>r</em>o, pa<em>r</em>a
+            <button class="play-mini" onclick="playAudio('ph-c-ex-r-soft')">▶</button>
+          </td>
+          <td>soft “r”, like American “tt” in “city”</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- DIGRAPHS -->
+    <h2>Digraphs (two-letter consonant sounds)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Letters</th>
+          <th>IPA</th>
+          <th>Portuguese example</th>
+          <th>English hint</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>CH</td>
+          <td>/ʃ/ <button class="play-mini" onclick="playAudio('ph-c-ipa-ch')">▶</button></td>
+          <td><em>ch</em>á, <em>ch</em>uva
+            <button class="play-mini" onclick="playAudio('ph-c-ex-ch')">▶</button>
+          </td>
+          <td>“sh” in “she”</td>
+        </tr>
+        <tr>
+          <td>LH</td>
+          <td>/ʎ/ <button class="play-mini" onclick="playAudio('ph-c-ipa-lh')">▶</button></td>
+          <td>fi<em>lh</em>o, ve<em>lh</em>o
+            <button class="play-mini" onclick="playAudio('ph-c-ex-lh')">▶</button>
+          </td>
+          <td>“ly” in “million”</td>
+        </tr>
+        <tr>
+          <td>NH</td>
+          <td>/ɲ/ <button class="play-mini" onclick="playAudio('ph-c-ipa-nh')">▶</button></td>
+          <td>ba<em>nh</em>o, vi<em>nh</em>o
+            <button class="play-mini" onclick="playAudio('ph-c-ex-nh')">▶</button>
+          </td>
+          <td>“ny” in “canyon”</td>
+        </tr>
+        <tr>
+          <td>RR</td>
+          <td>/ʁ/ <button class="play-mini" onclick="playAudio('ph-c-ipa-rr')">▶</button></td>
+          <td>ca<em>rr</em>o, te<em>rr</em>a
+            <button class="play-mini" onclick="playAudio('ph-c-ex-rr')">▶</button>
+          </td>
+          <td>same guttural “r” as word-start R</td>
+        </tr>
+        <tr>
+          <td>SS</td>
+          <td>/s/ <button class="play-mini" onclick="playAudio('ph-c-ipa-ss')">▶</button></td>
+          <td>pa<em>ss</em>ar, cla<em>ss</em>e
+            <button class="play-mini" onclick="playAudio('ph-c-ex-ss')">▶</button>
+          </td>
+          <td>“ss” in “miss”</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- CODA CONSONANTS -->
+    <h2>Coda consonants (end of syllable)</h2>
+    <p class="muted">
+      At the end of a syllable or word, some consonants change or disappear. The vowel often becomes nasal.
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <th>Letter</th>
+          <th>Position</th>
+          <th>IPA</th>
+          <th>Portuguese example</th>
+          <th>Hint</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>M</td>
+          <td>final</td>
+          <td>nasal vowel + silent m
+            <button class="play-mini" onclick="playAudio('ph-c-ipa-final-m')">▶</button>
+          </td>
+          <td>be<strong>m</strong>, ta<strong>m</strong>
+            <button class="play-mini" onclick="playAudio('ph-c-ex-final-m')">▶</button>
+          </td>
+          <td>vowel nasal, m not fully pronounced</td>
+        </tr>
+        <tr>
+          <td>N</td>
+          <td>final</td>
+          <td>nasal vowel + silent n
+            <button class="play-mini" onclick="playAudio('ph-c-ipa-final-n')">▶</button>
+          </td>
+          <td>to<strong>n</strong>, e<strong>n</strong>tão
+            <button class="play-mini" onclick="playAudio('ph-c-ex-final-n')">▶</button>
+          </td>
+          <td>vowel nasal</td>
+        </tr>
+        <tr>
+          <td>S</td>
+          <td>final</td>
+          <td>/ʃ/ or /s/
+            <button class="play-mini" onclick="playAudio('ph-c-ipa-final-s')">▶</button>
+          </td>
+          <td>mai<strong>s</strong>, Portuguê<strong>s</strong>
+            <button class="play-mini" onclick="playAudio('ph-c-ex-final-s')">▶</button>
+          </td>
+          <td>often “sh”-like at the end</td>
+        </tr>
+        <tr>
+          <td>Z</td>
+          <td>final</td>
+          <td>/ʃ/ or /z/
+            <button class="play-mini" onclick="playAudio('ph-c-ipa-final-z')">▶</button>
+          </td>
+          <td>feli<strong>z</strong>
+            <button class="play-mini" onclick="playAudio('ph-c-ex-final-z')">▶</button>
+          </td>
+          <td>may sound like “zh” or “sh”</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- X -->
+    <h2>The letter X</h2>
+    <p class="muted">
+      X can sound in several different ways. Here are the most common patterns.
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <th>Letter</th>
+          <th>Position / rule</th>
+          <th>IPA</th>
+          <th>Portuguese example</th>
+          <th>English hint</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>X</td>
+          <td>word beginning (common)</td>
+          <td>/ʃ/ <button class="play-mini" onclick="playAudio('ph-c-ipa-x-sh')">▶</button></td>
+          <td><em>x</em>ampu
+            <button class="play-mini" onclick="playAudio('ph-c-ex-x-sh')">▶</button>
+          </td>
+          <td>“sh” as in “she”</td>
+        </tr>
+        <tr>
+          <td>X</td>
+          <td>general case</td>
+          <td>/ʃ/ <button class="play-mini" onclick="playAudio('ph-c-ipa-x-sh2')">▶</button></td>
+          <td>lu<em>x</em>o, e<em>x</em>ame
+            <button class="play-mini" onclick="playAudio('ph-c-ex-x-sh2')">▶</button>
+          </td>
+          <td>“sh” sound</td>
+        </tr>
+        <tr>
+          <td>X</td>
+          <td>sometimes</td>
+          <td>/s/ <button class="play-mini" onclick="playAudio('ph-c-ipa-x-s')">▶</button></td>
+          <td>má<em>x</em>imo
+            <button class="play-mini" onclick="playAudio('ph-c-ex-x-s')">▶</button>
+          </td>
+          <td>“s” as in “see”</td>
+        </tr>
+        <tr>
+          <td>X</td>
+          <td>sometimes</td>
+          <td>/z/ <button class="play-mini" onclick="playAudio('ph-c-ipa-x-z')">▶</button></td>
+          <td>e<em>x</em>istir
+            <button class="play-mini" onclick="playAudio('ph-c-ex-x-z')">▶</button>
+          </td>
+          <td>“z” as in “zoo”</td>
+        </tr>
+        <tr>
+          <td>X</td>
+          <td>sometimes</td>
+          <td>/ks/ <button class="play-mini" onclick="playAudio('ph-c-ipa-x-ks')">▶</button></td>
+          <td>ta<em>x</em>i
+            <button class="play-mini" onclick="playAudio('ph-c-ex-x-ks')">▶</button>
+          </td>
+          <td>“x” in “taxi”</td>
+        </tr>
+        <tr>
+          <td>X</td>
+          <td>sometimes</td>
+          <td>/gz/ <button class="play-mini" onclick="playAudio('ph-c-ipa-x-gz')">▶</button></td>
+          <td>he<em>x</em>agonal
+            <button class="play-mini" onclick="playAudio('ph-c-ex-x-gz')">▶</button>
+          </td>
+          <td>“x” like “example”</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SUBTAB: VOWELS -->
+  <div id="sub-vowels" class="subpanel">
+    <p class="intro">
+      These tables summarise the main plain vowels and nasal vowels in European Portuguese.
+      Click the play buttons to hear each sound and its examples.
+    </p>
+
+    <h2>Plain vowels</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>IPA</th>
+          <th>Spelling</th>
+          <th>Portuguese example</th>
+          <th>English hint</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Open A</td>
+          <td>/a/ <button class="play-mini" onclick="playAudio('ph-v-ipa-open-a')">▶</button></td>
+          <td>A, Á</td>
+          <td>p<strong>a</strong>rte
+            <button class="play-mini" onclick="playAudio('ph-v-ex-open-a')">▶</button>
+          </td>
+          <td>“a” as in “p<strong>a</strong>rt” (AH)</td>
+        </tr>
+        <tr>
+          <td>Closed A</td>
+          <td>/ɐ/ <button class="play-mini" onclick="playAudio('ph-v-ipa-closed-a')">▶</button></td>
+          <td>A, Â</td>
+          <td>americ<strong>a</strong>
+            <button class="play-mini" onclick="playAudio('ph-v-ex-closed-a')">▶</button>
+          </td>
+          <td>“a” in “Americ<strong>a</strong>” (UH)</td>
+        </tr>
+        <tr>
+          <td>Open E</td>
+          <td>/ɛ/ <button class="play-mini" onclick="playAudio('ph-v-ipa-open-e')">▶</button></td>
+          <td>E, É</td>
+          <td>am<strong>é</strong>rica
+            <button class="play-mini" onclick="playAudio('ph-v-ex-open-e')">▶</button>
+          </td>
+          <td>“e” as in “b<strong>e</strong>d” (EH)</td>
+        </tr>
+        <tr>
+          <td>Closed E</td>
+          <td>/e/ <button class="play-mini" onclick="playAudio('ph-v-ipa-closed-e')">▶</button></td>
+          <td>E, Ê</td>
+          <td>m<strong>e</strong>sa
+            <button class="play-mini" onclick="playAudio('ph-v-ex-closed-e')">▶</button>
+          </td>
+          <td>between “i” and “e” (pin / pen)</td>
+        </tr>
+        <tr>
+          <td>Mute E</td>
+          <td>/ɨ/ <button class="play-mini" onclick="playAudio('ph-v-ipa-mute-e')">▶</button></td>
+          <td>E</td>
+          <td>d<strong>e</strong>
+            <button class="play-mini" onclick="playAudio('ph-v-ex-mute-e')">▶</button>
+          </td>
+          <td>between “the” and “full” (U~UH)</td>
+        </tr>
+        <tr>
+          <td>I</td>
+          <td>/i/ <button class="play-mini" onclick="playAudio('ph-v-ipa-i')">▶</button></td>
+          <td>I</td>
+          <td>b<strong>i</strong>fe
+            <button class="play-mini" onclick="playAudio('ph-v-ex-i')">▶</button>
+          </td>
+          <td>“ee” as in “b<strong>ee</strong>f”</td>
+        </tr>
+        <tr>
+          <td>Open O</td>
+          <td>/ɔ/ <button class="play-mini" onclick="playAudio('ph-v-ipa-open-o')">▶</button></td>
+          <td>O, Ó</td>
+          <td>m<strong>o</strong>do
+            <button class="play-mini" onclick="playAudio('ph-v-ex-open-o')">▶</button>
+          </td>
+          <td>“aw” as in “l<strong>aw</strong>”</td>
+        </tr>
+        <tr>
+          <td>Closed O</td>
+          <td>/o/ <button class="play-mini" onclick="playAudio('ph-v-ipa-closed-o')">▶</button></td>
+          <td>O, Ô, OU</td>
+          <td>p<strong>o</strong>rto
+            <button class="play-mini" onclick="playAudio('ph-v-ex-closed-o')">▶</button>
+          </td>
+          <td>“o” as in “c<strong>o</strong>ld”</td>
+        </tr>
+        <tr>
+          <td>U</td>
+          <td>/u/ <button class="play-mini" onclick="playAudio('ph-v-ipa-u')">▶</button></td>
+          <td>U</td>
+          <td>f<strong>u</strong>tebol
+            <button class="play-mini" onclick="playAudio('ph-v-ex-u')">▶</button>
+          </td>
+          <td>“oo” as in “f<strong>oo</strong>tball”</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Nasal vowels</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>IPA</th>
+          <th>Spelling patterns</th>
+          <th>Portuguese examples</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Nasal A</td>
+          <td>/ɐ̃/ <button class="play-mini" onclick="playAudio('ph-vn-ipa-a')">▶</button></td>
+          <td>AM, AN, Ã</td>
+          <td>c<strong>am</strong>po, pl<strong>an</strong>ta, ilus<strong>ão</strong>
+            <button class="play-mini" onclick="playAudio('ph-vn-ex-a')">▶</button>
+          </td>
+        </tr>
+        <tr>
+          <td>Nasal E</td>
+          <td>/ẽ/ <button class="play-mini" onclick="playAudio('ph-vn-ipa-e')">▶</button></td>
+          <td>EM, EN</td>
+          <td>t<strong>em</strong>po, c<strong>en</strong>tro
+            <button class="play-mini" onclick="playAudio('ph-vn-ex-e')">▶</button>
+          </td>
+        </tr>
+        <tr>
+          <td>Nasal I</td>
+          <td>/ĩ/ <button class="play-mini" onclick="playAudio('ph-vn-ipa-i')">▶</button></td>
+          <td>IM, IN</td>
+          <td><strong>im</strong>portante, <strong>in</strong>terior
+            <button class="play-mini" onclick="playAudio('ph-vn-ex-i')">▶</button>
+          </td>
+        </tr>
+        <tr>
+          <td>Nasal O</td>
+          <td>/õ/ <button class="play-mini" onclick="playAudio('ph-vn-ipa-o')">▶</button></td>
+          <td>OM, ON, Õ</td>
+          <td>c<strong>om</strong>pleto, l<strong>on</strong>go, ilus<strong>ões</strong>
+            <button class="play-mini" onclick="playAudio('ph-vn-ex-o')">▶</button>
+          </td>
+        </tr>
+        <tr>
+          <td>Nasal U</td>
+          <td>/ũ/ <button class="play-mini" onclick="playAudio('ph-vn-ipa-u')">▶</button></td>
+          <td>UM, UN</td>
+          <td>t<strong>um</strong>ba, adj<strong>un</strong>to
+            <button class="play-mini" onclick="playAudio('ph-vn-ex-u')">▶</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="muted" style="margin-top:10px;">
+      Tip for students: hold the vowel and gently hum through your nose – that’s the nasal feeling you want.
+    </p>
+  </div>
+</div>
+
+<!-- TAB 2: BASIC CONVERSATION (with sub-tabs 1 & 2) -->
+<div id="tab-basic" class="tab-panel">
+  <h1>Basic Conversation – Scott</h1>
+
+  <div class="subtabs">
+    <button class="subtab subtab-basic active" data-basic="basic1">Basic Conversation 1</button>
+    <button class="subtab subtab-basic" data-basic="basic2">Basic Conversation 2</button>
+  </div>
+
+  <!-- SUBTAB BASIC 1 -->
+  <div id="basic1-panel" class="subpanel active">
+    <p class="intro">
+      Practice introductory European Portuguese conversation phrases. Listen, repeat, download audio,
+      or test yourself with the global text quiz or audio quiz.
+    </p>
+
+    <div class="quiz-bar">
+      <button class="quiz" id="startQuizBasic1">🎓 Start Global Quiz</button>
+    </div>
+    <div id="quizStepBasic1" class="muted" style="text-align:center;"></div>
+    <div id="quizBoxBasic1" class="quiz-box" style="display:none;"></div>
+
+    <div id="phrasebookBasic1"></div>
+  </div>
+
+  <!-- SUBTAB BASIC 2 -->
+  <div id="basic2-panel" class="subpanel">
+    <p class="intro">
+      Basic Conversation 2 focuses on daily chat, days of the week, weather and time expressions.
+      Same structure: listen, repeat, and use the quiz to test Scott.
+    </p>
+
+    <div class="quiz-bar">
+      <button class="quiz" id="startQuizBasic2">🎓 Start Global Quiz</button>
+    </div>
+    <div id="quizStepBasic2" class="muted" style="text-align:center;"></div>
+    <div id="quizBoxBasic2" class="quiz-box" style="display:none;"></div>
+
+    <div id="phrasebookBasic2"></div>
+  </div>
+</div>
+
+<!-- TAB 3: ORDERING -->
+<div id="tab-ordering" class="tab-panel">
+  <h1>Restaurant & Café Ordering (Pedidos no Restaurante) – Scott</h1>
+  <p class="intro">
+    Learn and practise how to order food and drinks in European Portuguese at a restaurant or café.
+    Listen, repeat, use picture flashcards, and test yourself with the global quiz.
+  </p>
+
+  <div class="quiz-bar">
+    <button class="quiz" id="startQuizOrdering">🎓 Start Global Quiz</button>
+  </div>
+  <div id="quizStepOrdering" class="muted" style="text-align:center;"></div>
+  <div id="quizBoxOrdering" class="quiz-box" style="display:none;"></div>
+
+  <div id="phrasebookOrdering"></div>
+
+  <!-- FLASHCARDS -->
+  <div class="flashcard-section">
+    <h2>
+      <span>Flashcards (Cartões de Memória)</span>
+    </h2>
+    <p class="muted" style="text-align:center;">
+      Click "Start" to view picture flashcards. The front shows Portuguese. Click "Flip" to see English.
+    </p>
+    <div class="flashcard-controls">
+      <button class="quiz" id="startFlashcards">▶️ Start</button>
+      <button class="quiz" id="prevFlashcard">⬅️ Previous</button>
+      <button class="quiz" id="nextFlashcard">➡️ Next</button>
+      <button class="quiz" id="shuffleFlashcards">🔀 Shuffle</button>
+      <button class="quiz" id="flipFlashcard">🔁 Flip</button>
+    </div>
+    <div id="flashcardBox" class="flashcard" style="display:none;"></div>
+  </div>
+
+  <!-- ROLEPLAY DIALOGUES -->
+  <h2>
+    <span>Roleplay (Simulações de Conversa)</span>
+  </h2>
+  <p class="muted">
+    Use these dialogues with Scott. Swap roles so he can practise both as <strong>Cliente</strong> (customer)
+    and <strong>Empregado</strong> (waiter).
+  </p>
+
+  <h3>Level 1 – Basic (Nível 1 – Básico)</h3>
+  <div class="dialogue">
+    <p><span class="speaker">Cliente:</span> Boa tarde. Têm mesa para uma pessoa?</p>
+    <p><span class="speaker">Empregado:</span> Boa tarde. Sim, temos. Por aqui, se faz favor.</p>
+    <p><span class="speaker">Cliente:</span> Obrigado. Queria um café, por favor.</p>
+    <p><span class="speaker">Empregado:</span> Um café. Mais alguma coisa?</p>
+    <p><span class="speaker">Cliente:</span> Não, está tudo. Obrigado.</p>
+    <p><span class="speaker">Empregado:</span> Já trago.</p>
+  </div>
+
+  <h3>Level 2 – Intermediate (Nível 2 – Intermédio)</h3>
+  <div class="dialogue">
+    <p><span class="speaker">Cliente:</span> Olá, eu tenho uma reserva em nome de Scott.</p>
+    <p><span class="speaker">Empregado:</span> Boa noite, senhor Scott. Querem sentar-se lá fora ou cá dentro?</p>
+    <p><span class="speaker">Cliente:</span> Cá dentro, se faz favor.</p>
+    <p><span class="speaker">Empregado:</span> Muito bem, por aqui. Aqui está o menu.</p>
+    <p><span class="speaker">Empregado:</span> Já sabem o que vão pedir ou precisam de mais um momento?</p>
+    <p><span class="speaker">Cliente:</span> Ainda não estamos prontos. Mais um minuto, por favor.</p>
+    <p><span class="speaker">Empregado:</span> Claro.</p>
+    <p><span class="speaker">Cliente:</span> Agora estamos prontos. Para mim, o prato do dia.</p>
+    <p><span class="speaker">Empregado:</span> E para beber?</p>
+    <p><span class="speaker">Cliente:</span> Uma Superbock fresca, por favor.</p>
+  </div>
+
+  <h3>Level 3 – Upper-Intermediate (Nível 3 – Intermédio-Alto)</h3>
+  <div class="dialogue">
+    <p><span class="speaker">Cliente:</span> Boa noite. Têm mesa para quatro pessoas?</p>
+    <p><span class="speaker">Empregado:</span> Boa noite. Sim, temos. Podem seguir-me, por favor.</p>
+    <p><span class="speaker">Cliente:</span> Obrigado. Posso ver o menu?</p>
+    <p><span class="speaker">Empregado:</span> Claro. Hoje temos alguns pratos do dia muito bons.</p>
+    <p><span class="speaker">Cliente:</span> Quais são os pratos do dia?</p>
+    <p><span class="speaker">Empregado:</span> Temos bacalhau à Brás, porco à Alentejana e polvo grelhado.</p>
+    <p><span class="speaker">Cliente:</span> O polvo é picante?</p>
+    <p><span class="speaker">Empregado:</span> Não, não é picante. Mas se quiser, podemos pôr molho picante à parte.</p>
+    <p><span class="speaker">Cliente:</span> Perfeito. Para mim, o polvo grelhado com salada, por favor.</p>
+    <p><span class="speaker">Empregado:</span> Muito bem. E para beber?</p>
+    <p><span class="speaker">Cliente:</span> Uma garrafa de água sem gás e um copo de vinho branco.</p>
+    <p><span class="speaker">Empregado:</span> Está bem, já trago.</p>
+  </div>
+
+  <h3>Level 4 – Advanced (Nível 4 – Avançado)</h3>
+  <div class="dialogue">
+    <p><span class="speaker">Cliente:</span> Boa tarde. Somos três e temos uma reserva para as oito.</p>
+    <p><span class="speaker">Empregado:</span> Boa tarde. Em nome de quem, se faz favor?</p>
+    <p><span class="speaker">Cliente:</span> Em nome de Scott.</p>
+    <p><span class="speaker">Empregado:</span> Sim, está aqui. Querem sentar-se junto à janela ou mais no fundo?</p>
+    <p><span class="speaker">Cliente:</span> Junto à janela, por favor.</p>
+    <p><span class="speaker">Empregado:</span> Muito bem. Aqui está o menu. Se tiverem alguma dúvida, digam-me.</p>
+    <p><span class="speaker">Cliente:</span> Eu estou a aprender português, queria praticar o meu português. Pode falar um bocadinho mais devagar?</p>
+    <p><span class="speaker">Empregado:</span> Claro, sem problema. Têm alguma alergia?</p>
+    <p><span class="speaker">Cliente:</span> Sim, sou alérgico a marisco. O prato do dia tem marisco?</p>
+    <p><span class="speaker">Empregado:</span> Hoje o prato do dia é frango com arroz, sem marisco.</p>
+    <p><span class="speaker">Cliente:</span> Ótimo. Então para mim, o prato do dia. Pode vir sem salada e com mais vegetais?</p>
+    <p><span class="speaker">Empregado:</span> Sim, podemos trocar a salada por vegetais.</p>
+    <p><span class="speaker">Cliente:</span> Perfeito, obrigado.</p>
+  </div>
+
+  <h3>Level 5 – Challenge (Nível 5 – Desafio)</h3>
+  <div class="dialogue">
+    <p><span class="speaker">Empregado:</span> Boa noite, bem-vindos. Têm reserva ou é só chegar?</p>
+    <p><span class="speaker">Cliente:</span> Boa noite. Não temos reserva. Têm mesa para duas pessoas?</p>
+    <p><span class="speaker">Empregado:</span> Temos, sim. Vai demorar só cinco minutos. Querem esperar na esplanada?</p>
+    <p><span class="speaker">Cliente:</span> Sim, perfeito.</p>
+    <p><span class="speaker">Empregado:</span> Pronto, a mesa já está. Podem acompanhar-me, por favor.</p>
+    <p><span class="speaker">Cliente:</span> Obrigado.</p>
+    <p><span class="speaker">Empregado:</span> Aqui está o menu. Hoje temos vários especiais. Se quiserem, posso recomendar alguma coisa.</p>
+    <p><span class="speaker">Cliente:</span> Ótimo, o que recomenda?</p>
+    <p><span class="speaker">Empregado:</span> O camarão Moçambique é muito popular, e o bitoque também.</p>
+    <p><span class="speaker">Cliente:</span> Então, para mim, o camarão Moçambique e, para ela, o bitoque.</p>
+    <p><span class="speaker">Empregado:</span> Muito bem. E para beber?</p>
+    <p><span class="speaker">Cliente:</span> Uma jarra de vinho tinto e uma água com limão, por favor.</p>
+    <p><span class="speaker">Empregado:</span> Perfeito. No final, querem o recibo?</p>
+    <p><span class="speaker">Cliente:</span> Sim, por favor.</p>
+  </div>
+</div>
+
+<script>
+/* -----------------------------
+   SHARED HELPERS
+----------------------------- */
+
+// Audio
+let currentAudioObj = null;
+function playAudio(id, rate=1){
+  if(currentAudioObj){
+    currentAudioObj.pause();
+    currentAudioObj = null;
+  }
+  const audio = new Audio('audio/' + id + '.mp3');
+  audio.playbackRate = rate;
+  audio.play();
+  currentAudioObj = audio;
+}
+
+function repeatSection(section){
+  let i = 0;
+  const playNext = () => {
+    if(i < section.phrases.length){
+      playAudio(section.phrases[i].id, 1);
+      i++;
+      setTimeout(playNext, 3000);
+    }
+  };
+  playNext();
+}
+
+// Utils
+function shuffle(arr){
+  return arr.sort(() => Math.random() - 0.5);
+}
+
+function generateOptions(correct, pool){
+  const set = new Set([correct]);
+  while(set.size < 4 && pool.length > 0){
+    const c = pool[Math.floor(Math.random() * pool.length)];
+    set.add(c);
+  }
+  return shuffle(Array.from(set));
+}
+
+function sanitizeFilename(s){
+  return s
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^\w\s-]/g,'')
+    .trim()
+    .replace(/\s+/g,'_');
+}
+
+// ZIP download (shared)
+async function downloadSection(section, header){
+  const zip = new JSZip();
+  const msg = header.nextElementSibling; // the progress-message div
+  const btn = header.querySelector('.download');
+
+  msg.textContent = 'Preparing ZIP...';
+  btn.disabled = true;
+
+  const total = section.phrases.length;
+  let done = 0;
+
+  for(const ph of section.phrases){
+    const fname = sanitizeFilename(ph.pt) + '.mp3';
+    const url = 'audio/' + ph.id + '.mp3';
+    try{
+      const r = await fetch(url);
+      if(!r.ok) throw new Error();
+      const blob = await r.blob();
+      zip.file(fname, blob);
+      done++;
+      msg.textContent = `Preparing ZIP... ${Math.round(done/total*100)}%`;
+    }catch{
+      msg.textContent = `⚠️ Missing file: ${ph.id}.mp3`;
+    }
+  }
+
+  const content = await zip.generateAsync({type:'blob'}, m => {
+    msg.textContent = `Compressing... ${Math.round(m.percent)}%`;
+  });
+
+  saveAs(content, section.title.replace(/\s+/g,'_') + '.zip');
+
+  msg.textContent = '✅ Download ready!';
+  btn.classList.add('done');
+  btn.disabled = false;
+
+  setTimeout(() => {
+    msg.textContent = '';
+    btn.classList.remove('done');
+  }, 4000);
+}
+
+/* -----------------------------
+   QUIZ ENGINE (SHARED)
+----------------------------- */
+
+let activeQuiz = null;
+
+function closeActiveQuiz(){
+  if(activeQuiz && typeof activeQuiz.stop === 'function'){
+    activeQuiz.stop();
+  }
+  activeQuiz = null;
+}
+
+function showModeChooser(stepEl, onChoose){
+  const modeWrap = document.createElement('div');
+  modeWrap.className = 'mode-chooser';
+  modeWrap.innerHTML = `
+    <button class="quiz" data-mode="pt-en">🇵🇹 Portuguese → English</button>
+    <button class="quiz" data-mode="en-pt">🇬🇧 English → Portuguese</button>
+    <button class="quiz" data-mode="mix">🔄 Mixed</button>
+    <button class="quiz" data-mode="audio">🔊 Audio Quiz (PT → EN)</button>
+  `;
+  stepEl.innerHTML = '';
+  stepEl.appendChild(modeWrap);
+  modeWrap.querySelectorAll('button').forEach(b => {
+    b.addEventListener('click', () => {
+      const mode = b.dataset.mode;
+      stepEl.innerHTML = '';
+      onChoose(mode);
+    });
+  });
+}
+
+function startTextQuiz({mode, phrases, container, onBeforeStart}){
+  if(onBeforeStart) onBeforeStart();
+
+  const state = {
+    idx:0,
+    score:0,
+    list:shuffle(phrases.slice()),
+    stop(){
+      container.style.display='none';
+      container.innerHTML='';
+    }
+  };
+  closeActiveQuiz();
+  activeQuiz = state;
+
+  const qEl = document.createElement('div');
+  qEl.className = 'quiz-question';
+
+  const optsEl = document.createElement('div');
+  optsEl.className = 'quiz-options';
+
+  const ctrEl = document.createElement('div');
+  ctrEl.className = 'muted';
+  ctrEl.style.marginTop = '10px';
+
+  const nextWrap = document.createElement('div');
+  nextWrap.style.marginTop = '10px';
+
+  const nextBtn = document.createElement('button');
+  nextBtn.className = 'quiz';
+  nextBtn.textContent = 'Next';
+  nextBtn.style.display = 'none';
+
+  nextWrap.appendChild(nextBtn);
+  container.appendChild(qEl);
+  container.appendChild(optsEl);
+  container.appendChild(ctrEl);
+  container.appendChild(nextWrap);
+
+  function renderQuestion(){
+    if(state.idx >= state.list.length){
+      qEl.textContent = `✅ Quiz complete! You scored ${state.score} / ${state.list.length}.`;
+      optsEl.innerHTML = '';
+      nextBtn.textContent = 'Close';
+      nextBtn.style.display = 'inline-block';
+      nextBtn.onclick = () => { closeActiveQuiz(); };
+      return;
+    }
+
+    const item = state.list[state.idx];
+    let dir = mode === 'mix' ? (Math.random() > 0.5 ? 'pt-en' : 'en-pt') : mode;
+
+    const isPtEn = dir === 'pt-en';
+    const questionText = isPtEn ? item.pt : item.en;
+    const correct = isPtEn ? item.en : item.pt;
+    const pool = isPtEn ? state.list.map(p => p.en) : state.list.map(p => p.pt);
+
+    const options = generateOptions(correct, pool);
+
+    qEl.textContent = questionText;
+    optsEl.innerHTML = '';
+    ctrEl.textContent = `Question ${state.idx + 1} of ${state.list.length}`;
+
+    options.forEach(opt => {
+      const b = document.createElement('button');
+      b.textContent = opt;
+      b.addEventListener('click', () => {
+        Array.from(optsEl.children).forEach(btn => btn.disabled = true);
+        if(opt === correct){
+          b.classList.add('correct');
+          state.score++;
+        }else{
+          b.classList.add('wrong');
+          Array.from(optsEl.children).forEach(btn => {
+            if(btn.textContent === correct) btn.classList.add('correct');
+          });
+        }
+        nextBtn.style.display = 'inline-block';
+        nextBtn.onclick = () => {
+          nextBtn.style.display = 'none';
+          state.idx++;
+          renderQuestion();
+        };
+      });
+      optsEl.appendChild(b);
+    });
+  }
+
+  renderQuestion();
+}
+
+function startAudioQuiz({phrases, container, onBeforeStart}){
+  if(onBeforeStart) onBeforeStart();
+
+  const state = {
+    idx:0,
+    score:0,
+    list:shuffle(phrases.slice()),
+    stop(){
+      container.style.display='none';
+      container.innerHTML='';
+    }
+  };
+  closeActiveQuiz();
+  activeQuiz = state;
+
+  const qEl = document.createElement('div');
+  qEl.className = 'quiz-question';
+  qEl.textContent = 'Listen and choose the correct translation:';
+
+  const audioBtn = document.createElement('button');
+  audioBtn.className = 'quiz';
+  audioBtn.textContent = '▶️ Play';
+  audioBtn.style.marginBottom = '12px';
+
+  const optsEl = document.createElement('div');
+  optsEl.className = 'quiz-options';
+
+  const ctrEl = document.createElement('div');
+  ctrEl.className = 'muted';
+  ctrEl.style.marginTop = '10px';
+
+  const nextWrap = document.createElement('div');
+  nextWrap.style.marginTop = '12px';
+
+  const nextBtn = document.createElement('button');
+  nextBtn.className = 'quiz';
+  nextBtn.textContent = 'Next';
+  nextBtn.style.display = 'none';
+
+  nextWrap.appendChild(nextBtn);
+
+  container.appendChild(qEl);
+  container.appendChild(audioBtn);
+  container.appendChild(optsEl);
+  container.appendChild(ctrEl);
+  container.appendChild(nextWrap);
+
+  function playAudioFor(item){
+    playAudio(item.id, 1);
+  }
+
+  function renderAudioQuestion(){
+    if(state.idx >= state.list.length){
+      qEl.textContent = `✅ Audio quiz complete! You scored ${state.score} / ${state.list.length}.`;
+      audioBtn.style.display = 'none';
+      optsEl.innerHTML = '';
+      nextBtn.textContent = 'Close';
+      nextBtn.style.display = 'inline-block';
+      nextBtn.onclick = () => { closeActiveQuiz(); };
+      ctrEl.textContent = '';
+      return;
+    }
+
+    const item = state.list[state.idx];
+    const correct = item.en;
+    const pool = state.list.map(p => p.en);
+    const options = generateOptions(correct, pool);
+
+    audioBtn.textContent = '▶️ Play';
+    optsEl.innerHTML = '';
+    nextBtn.style.display = 'none';
+    ctrEl.textContent = `Question ${state.idx + 1} of ${state.list.length}`;
+
+    audioBtn.onclick = () => {
+      audioBtn.textContent = '🔁 Play again';
+      playAudioFor(item);
+    };
+
+    options.forEach(opt => {
+      const b = document.createElement('button');
+      b.textContent = opt;
+      b.addEventListener('click', () => {
+        Array.from(optsEl.children).forEach(btn => btn.disabled = true);
+
+        if(opt === correct){
+          b.classList.add('correct');
+          state.score++;
+        }else{
+          b.classList.add('wrong');
+          Array.from(optsEl.children).forEach(btn => {
+            if(btn.textContent === correct) btn.classList.add('correct');
+          });
+        }
+
+        nextBtn.style.display = 'inline-block';
+        nextBtn.onclick = () => {
+          state.idx++;
+          renderAudioQuestion();
+        };
+      });
+      optsEl.appendChild(b);
+    });
+  }
+
+  renderAudioQuestion();
+}
+
+/* -----------------------------
+   BASIC CONVERSATION 1 DATA + UI
+----------------------------- */
+
+const sectionsBasic1 = [
+  { title:'Greetings', phrases:[
+    {id:'p1', pt:'Olá', en:'Hello'},
+    {id:'p2', pt:'Oi', en:'Hi'}
+  ]},
+  { title:'Times of Day', phrases:[
+    {id:'p3', pt:'Bom dia', en:'Good morning'},
+    {id:'p4', pt:'Boa tarde', en:'Good afternoon'},
+    {id:'p5', pt:'Boa noite', en:'Good evening / Good night'}
+  ]},
+  { title:'How Are You?', phrases:[
+    {id:'p6', pt:'Como estás?', en:'How are you?'},
+    {id:'p7', pt:'Estou bem e tu?', en:"I'm fine and you?"},
+    {id:'p8', pt:'Também estou bem', en:"I'm fine too"},
+    {id:'p9', pt:'Tudo bem?', en:'All good? / How are you?'},
+    {id:'p10', pt:'Sim, tudo bem e contigo?', en:'Yes, all good and you?'},
+    {id:'p11', pt:'Também está tudo bem', en:"Everything's fine too"}
+  ]},
+  { title:'Names & Introductions', phrases:[
+    {id:'p12', pt:'Como te chamas?', en:"What's your name?"},
+    {id:'p13', pt:'Chamo-me…', en:'My name is…'},
+    {id:'p14', pt:'Eu sou o…', en:"I'm (male)…"},
+    {id:'p15', pt:'Qual é o teu nome?', en:"What's your name?"},
+    {id:'p16', pt:'O meu nome é…', en:'My name is…'}
+  ]},
+  { title:'Meeting Someone', phrases:[
+    {id:'p17', pt:'Prazer', en:'Pleasure'},
+    {id:'p18', pt:'Muito prazer', en:'Nice to meet you'},
+    {id:'p19', pt:'Prazer em te conhecer', en:'Nice to meet you'}
+  ]},
+  { title:"Where You're From & Where You Live", phrases:[
+    {id:'p20', pt:'De onde és?', en:'Where are you from?'},
+    {id:'p21', pt:'Eu sou da Escócia', en:"I'm from Scotland"},
+    {id:'p22', pt:'Aonde vives?', en:'Where do you live?'},
+    {id:'p23', pt:'Eu vivo na Escócia', en:'I live in Scotland'}
+  ]},
+  { title:'Age', phrases:[
+    {id:'p24', pt:'Quantos anos tens?', en:'How old are you?'},
+    {id:'p25', pt:'Eu tenho dezassete anos', en:"I'm seventeen years old"}
+  ]},
+  { title:'Work', phrases:[
+    {id:'p26', pt:'Qual é o teu trabalho?', en:"What's your job?"},
+    {id:'p27', pt:'Eu trabalho em tecnologia', en:'I work in technology'}
+  ]},
+  { title:'Likes & Activities', phrases:[
+    {id:'p28', pt:'O que é que gostas de fazer?', en:'What do you like to do?'},
+    {id:'p29', pt:'Eu gosto de viajar', en:'I like to travel'}
+  ]},
+  { title:'Farewells', phrases:[
+    {id:'p30', pt:'Foi um prazer', en:'It was a pleasure'},
+    {id:'p31', pt:'Fica bem e até à próxima', en:'Take care and see you next time'},
+    {id:'p32', pt:'Igualmente', en:'Likewise / Same to you'},
+    {id:'p33', pt:'Tu também', en:'You too'}
+  ]}
+];
+
+const containerBasic1 = document.getElementById('phrasebookBasic1');
+
+sectionsBasic1.forEach(section => {
+  const secDiv = document.createElement('div');
+  const h2 = document.createElement('h2');
+  const titleSpan = document.createElement('span');
+  titleSpan.textContent = section.title;
+  h2.appendChild(titleSpan);
+
+  const controls = document.createElement('div');
+  controls.className = 'section-controls';
+
+  const repeatBtn = document.createElement('button');
+  repeatBtn.className = 'repeat';
+  repeatBtn.textContent = 'Listen & Repeat Section';
+  repeatBtn.addEventListener('click', () => repeatSection(section));
+  controls.appendChild(repeatBtn);
+
+  const downloadBtn = document.createElement('button');
+  downloadBtn.className = 'download';
+  downloadBtn.textContent = 'Download Section Audio';
+  downloadBtn.addEventListener('click', () => downloadSection(section, h2));
+  controls.appendChild(downloadBtn);
+
+  h2.appendChild(controls);
+  secDiv.appendChild(h2);
+
+  const progressMsg = document.createElement('div');
+  progressMsg.className = 'progress-message';
+  secDiv.appendChild(progressMsg);
+
+  const table = document.createElement('table');
+  const thead = document.createElement('thead');
+  thead.innerHTML = '<tr><th>Português</th><th>English</th><th>Actions</th></tr>';
+  table.appendChild(thead);
+
+  const tbody = document.createElement('tbody');
+
+  section.phrases.forEach(ph => {
+    const tr = document.createElement('tr');
+
+    const tdPt = document.createElement('td');
+    tdPt.className = 'pt';
+    tdPt.textContent = ph.pt;
+
+    const tdEn = document.createElement('td');
+    tdEn.className = 'en';
+    tdEn.textContent = ph.en;
+
+    const tdActions = document.createElement('td');
+    tdActions.className = 'actions';
+
+    const playBtn = document.createElement('button');
+    playBtn.className = 'play';
+    playBtn.textContent = 'Play';
+    playBtn.addEventListener('click', () => playAudio(ph.id, 1));
+    tdActions.appendChild(playBtn);
+
+    const slowBtn = document.createElement('button');
+    slowBtn.className = 'slow';
+    slowBtn.textContent = 'Slow';
+    slowBtn.addEventListener('click', () => playAudio(ph.id, 0.8));
+    tdActions.appendChild(slowBtn);
+
+    tr.appendChild(tdPt);
+    tr.appendChild(tdEn);
+    tr.appendChild(tdActions);
+    tbody.appendChild(tr);
+  });
+
+  table.appendChild(tbody);
+  secDiv.appendChild(table);
+  containerBasic1.appendChild(secDiv);
+});
+
+// Basic 1 quiz setup
+const basicBtn1 = document.getElementById('startQuizBasic1');
+const basicStep1 = document.getElementById('quizStepBasic1');
+const basicBox1 = document.getElementById('quizBoxBasic1');
+
+basicBtn1.addEventListener('click', () => {
+  closeActiveQuiz();
+  basicBox1.style.display = 'none';
+  basicStep1.innerHTML = '';
+  showModeChooser(basicStep1, mode => {
+    const phrases = sectionsBasic1.flatMap(s => s.phrases);
+    if(mode === 'audio'){
+      startAudioQuiz({
+        phrases,
+        container: basicBox1,
+        onBeforeStart: () => {
+          closeActiveQuiz();
+          basicBox1.innerHTML = '';
+          basicBox1.style.display = 'block';
+        }
+      });
+    }else{
+      startTextQuiz({
+        mode,
+        phrases,
+        container: basicBox1,
+        onBeforeStart: () => {
+          closeActiveQuiz();
+          basicBox1.innerHTML = '';
+          basicBox1.style.display = 'block';
+        }
+      });
+    }
+  });
+});
+
+/* -----------------------------
+   BASIC CONVERSATION 2 DATA + UI
+----------------------------- */
+
+const sectionsBasic2 = [
+  {
+    title:'Daily Conversation – How is your day going?',
+    phrases:[
+      {id:'b2_3', pt:'Como está a correr…', en:'How is it going…'},
+      {id:'b2_4', pt:'Como está a correr o teu dia?', en:'How is your day going?'},
+      {id:'b2_5', pt:'(O meu dia) está a correr bem.', en:'(My day) it is going well.'},
+      {id:'b2_6', pt:'(O meu dia) está a correr ok.', en:'(My day) it is going ok.'},
+      {id:'b2_7', pt:'(O meu dia) está a correr mais ou menos.', en:'(My day) it is going more or less.'},
+      {id:'b2_8', pt:'(O meu dia) está a correr mal.', en:'(My day) it is going badly.'},
+      {id:'b2_9', pt:'E o teu?', en:'And yours?'},
+      {id:'b2_10', pt:'E como está a correr o teu dia?', en:'And how is your day going?'},
+      {id:'b2_11', pt:'Também está a correr bem.', en:'It is also going well.'}
+    ]
+  },
+  {
+    title:'Dias da semana e fim de semana',
+    phrases:[
+      {id:'b2_12', pt:'Que dia é hoje?', en:'What day is it today?'},
+      {id:'b2_13', pt:'Hoje é…', en:'Today is...'},
+      {id:'b2_14', pt:'Segunda-feira', en:'Monday'},
+      {id:'b2_15', pt:'Terça-feira', en:'Tuesday'},
+      {id:'b2_16', pt:'Quarta-feira', en:'Wednesday'},
+      {id:'b2_17', pt:'Quinta-feira', en:'Thursday'},
+      {id:'b2_18', pt:'Sexta-feira', en:'Friday'},
+      {id:'b2_19', pt:'Sábado', en:'Saturday'},
+      {id:'b2_20', pt:'Domingo', en:'Sunday'}
+    ]
+  },
+  {
+    title:'O Tempo (Weather)',
+    phrases:[
+      {id:'b2_21', pt:'Como está o tempo?', en:'How is the weather?'},
+      {id:'b2_22', pt:'O tempo está bom.', en:'The weather is good.'},
+      {id:'b2_23', pt:'O tempo está mau.', en:'The weather is bad.'},
+      {id:'b2_24', pt:'O tempo está ok.', en:'The weather is okay.'},
+      {id:'b2_25', pt:'O tempo está mais ou menos.', en:'The weather is so-so.'},
+      {id:'b2_26', pt:'Um pouco.', en:'A little.'},
+      {id:'b2_27', pt:'Muito.', en:'A lot.'},
+      {id:'b2_28', pt:'Está frio.', en:"It's cold."},
+      {id:'b2_29', pt:'Está calor.', en:"It's hot."},
+      {id:'b2_30', pt:'Está nevoeiro.', en:"It's foggy."},
+      {id:'b2_31', pt:'Está nublado.', en:"It's cloudy."},
+      {id:'b2_32', pt:'Está sol.', en:"It's sunny."},
+      {id:'b2_33', pt:'Está vento.', en:"It's windy."},
+      {id:'b2_34', pt:'Está trovoada.', en:"It's stormy."},
+      {id:'b2_35', pt:'Está húmido.', en:"It's humid."},
+      {id:'b2_36', pt:'Está uma ventania.', en:"It's very windy."},
+      {id:'b2_37', pt:'Está uma tempestade.', en:"It's stormy."},
+      {id:'b2_38', pt:'Está a chover.', en:"It's raining."},
+      {id:'b2_39', pt:'Está a chuviscar.', en:"It's drizzling."},
+      {id:'b2_40', pt:'Está a nevar.', en:"It's snowing."},
+      {id:'b2_41', pt:'Estão quantos graus?', en:'How many degrees is it?'},
+      {id:'b2_42', pt:'Estão ... graus.', en:'It is ... degrees.'},
+      {id:'b2_43', pt:'Por volta de...', en:'Around...'}
+    ]
+  },
+  {
+    title:'Horas e expressões de tempo',
+    phrases:[
+      {id:'b2_44', pt:'Da manhã', en:'Morning.'},
+      {id:'b2_45', pt:'Da tarde', en:'Afternoon.'},
+      {id:'b2_46', pt:'Da noite', en:'Evening.'},
+      {id:'b2_47', pt:'Que horas são?', en:'What time is it?'},
+      {id:'b2_48', pt:'Kiórashão', en:'“Que horas são” (pronunciation: kiórashão)'},
+      {id:'b2_49', pt:'São ...', en:"It's ..."},
+      {id:'b2_50', pt:'Sete da manhã.', en:'Seven in the morning.'},
+      {id:'b2_51', pt:'Duas da tarde.', en:'Two in the afternoon.'},
+      {id:'b2_52', pt:'Oito da noite.', en:'Eight in the evening.'},
+      {id:'b2_53', pt:'É ...', en:"It's ..."},
+      {id:'b2_54', pt:'Uma hora.', en:"One o'clock."},
+      {id:'b2_55', pt:'Meio dia.', en:'Midday.'},
+      {id:'b2_56', pt:'Meia noite.', en:'Midnight.'},
+      {id:'b2_57', pt:'Um quarto.', en:'A quarter.'},
+      {id:'b2_58', pt:'E trinta.', en:'And thirty.'},
+      {id:'b2_59', pt:'E meia.', en:'And a half.'},
+      {id:'b2_60', pt:'São ... depois das ...', en:'It is ... after ...'},
+      {id:'b2_61', pt:'São dez depois das quatro.', en:'It is ten past four.'},
+      {id:'b2_62', pt:'São vinte e cinco depois das seis.', en:'It is twenty-five past six.'},
+      {id:'b2_63', pt:'É um quarto depois das seis.', en:'It is a quarter past six.'},
+      {id:'b2_64', pt:'É um quarto depois do meio dia.', en:'It is a quarter past noon.'},
+      {id:'b2_65', pt:'São ... para as ...', en:'It is ... to ...'},
+      {id:'b2_66', pt:'São quinze para as nove.', en:'It is fifteen to nine.'},
+      {id:'b2_67', pt:'São vinte e cinco para as nove.', en:"It is twenty-five to nine."}
+    ]
+  }
+];
+
+const containerBasic2 = document.getElementById('phrasebookBasic2');
+
+sectionsBasic2.forEach(section => {
+  const secDiv = document.createElement('div');
+  const h2 = document.createElement('h2');
+  const titleSpan = document.createElement('span');
+  titleSpan.textContent = section.title;
+  h2.appendChild(titleSpan);
+
+  const controls = document.createElement('div');
+  controls.className = 'section-controls';
+
+  const repeatBtn = document.createElement('button');
+  repeatBtn.className = 'repeat';
+  repeatBtn.textContent = 'Listen & Repeat Section';
+  repeatBtn.addEventListener('click', () => repeatSection(section));
+  controls.appendChild(repeatBtn);
+
+  const downloadBtn = document.createElement('button');
+  downloadBtn.className = 'download';
+  downloadBtn.textContent = 'Download Section Audio';
+  downloadBtn.addEventListener('click', () => downloadSection(section, h2));
+  controls.appendChild(downloadBtn);
+
+  h2.appendChild(controls);
+  secDiv.appendChild(h2);
+
+  const progressMsg = document.createElement('div');
+  progressMsg.className = 'progress-message';
+  secDiv.appendChild(progressMsg);
+
+  const table = document.createElement('table');
+  const thead = document.createElement('thead');
+  thead.innerHTML = '<tr><th>Português</th><th>English</th><th>Actions</th></tr>';
+  table.appendChild(thead);
+
+  const tbody = document.createElement('tbody');
+
+  section.phrases.forEach(ph => {
+    const tr = document.createElement('tr');
+
+    const tdPt = document.createElement('td');
+    tdPt.className = 'pt';
+    tdPt.textContent = ph.pt;
+
+    const tdEn = document.createElement('td');
+    tdEn.className = 'en';
+    tdEn.textContent = ph.en;
+
+    const tdActions = document.createElement('td');
+    tdActions.className = 'actions';
+
+    const playBtn = document.createElement('button');
+    playBtn.className = 'play';
+    playBtn.textContent = 'Play';
+    playBtn.addEventListener('click', () => playAudio(ph.id, 1));
+    tdActions.appendChild(playBtn);
+
+    const slowBtn = document.createElement('button');
+    slowBtn.className = 'slow';
+    slowBtn.textContent = 'Slow';
+    slowBtn.addEventListener('click', () => playAudio(ph.id, 0.8));
+    tdActions.appendChild(slowBtn);
+
+    tr.appendChild(tdPt);
+    tr.appendChild(tdEn);
+    tr.appendChild(tdActions);
+    tbody.appendChild(tr);
+  });
+
+  table.appendChild(tbody);
+  secDiv.appendChild(table);
+  containerBasic2.appendChild(secDiv);
+});
+
+// Basic 2 quiz setup
+const basicBtn2 = document.getElementById('startQuizBasic2');
+const basicStep2 = document.getElementById('quizStepBasic2');
+const basicBox2 = document.getElementById('quizBoxBasic2');
+
+basicBtn2.addEventListener('click', () => {
+  closeActiveQuiz();
+  basicBox2.style.display = 'none';
+  basicStep2.innerHTML = '';
+  showModeChooser(basicStep2, mode => {
+    const phrases = sectionsBasic2.flatMap(s => s.phrases);
+    if(mode === 'audio'){
+      startAudioQuiz({
+        phrases,
+        container: basicBox2,
+        onBeforeStart: () => {
+          closeActiveQuiz();
+          basicBox2.innerHTML = '';
+          basicBox2.style.display = 'block';
+        }
+      });
+    }else{
+      startTextQuiz({
+        mode,
+        phrases,
+        container: basicBox2,
+        onBeforeStart: () => {
+          closeActiveQuiz();
+          basicBox2.innerHTML = '';
+          basicBox2.style.display = 'block';
+        }
+      });
+    }
+  });
+});
+
+/* -----------------------------
+   ORDERING DATA + UI
+----------------------------- */
+
+const sectionsOrdering = [
+  {
+    title:'Verbs & Structures for Ordering (Verbos e Estruturas para Pedir)',
+    phrases:[
+      {id:'c1', pt:'Queria…', en:'I would like…'},
+      {id:'c2', pt:'Gostaria de…', en:'I would like…'},
+      {id:'c3', pt:'Gostava de…', en:'I would like…'},
+      {id:'c4', pt:'Podia…?', en:'Could I…?'},
+      {id:'c5', pt:'Poderia…?', en:'Could I…?'},
+      {id:'c6', pt:'Podia dar-me…?', en:'Could you give me…?'},
+      {id:'c7', pt:'Podia trazer-me…?', en:'Could you bring me…?'},
+      {id:'c8', pt:'Podia ter…?', en:'Could I have…?'},
+      {id:'c9', pt:'Para mim, era…', en:"For me, I'll have…"},
+      {id:'c10', pt:'Para já quero…', en:'For now, I want…'},
+      {id:'c11', pt:'Eu queria pedir…', en:'I would like to order…'}
+    ]
+  },
+  {
+    title:'Polite Expressions (Expressões de Cortesia)',
+    phrases:[
+      {id:'c12', pt:'Com licença', en:'Excuse me'},
+      {id:'c13', pt:'Desculpe', en:'Sorry / excuse me'},
+      {id:'c14', pt:'Por favor', en:'Please'},
+      {id:'c15', pt:'Se faz favor', en:'Please (formal)'},
+      {id:'c16', pt:'Obrigado', en:'Thank you (said by a man)'},
+      {id:'c17', pt:'Obrigada', en:'Thank you (said by a woman)'},
+      {id:'c18', pt:'De nada', en:"You're welcome"}
+    ]
+  },
+  {
+    title:'Reservations & Asking for a Table (Reservas e Pedidos de Mesa)',
+    phrases:[
+      {id:'c19', pt:'Gostaria de uma mesa para três pessoas.', en:'I would like a table for three.'},
+      {id:'c20', pt:'Têm mesa para duas pessoas?', en:'Do you have a table for two?'},
+      {id:'c21', pt:'Queria uma mesa lá fora.', en:'I wanted a table outside.'},
+      {id:'c22', pt:'Queria uma mesa cá dentro.', en:'I wanted a table inside.'},
+      {id:'c23', pt:'Eu tenho uma reserva.', en:'I have a reservation.'},
+      {id:'c24', pt:'Tenho uma reserva em nome de…', en:'I have a reservation under the name…'},
+      {id:'c25', pt:'Querem sentar-se lá fora ou cá dentro?', en:'Would you like to sit outside or inside?'},
+      {id:'c26', pt:'A esplanada está aberta.', en:'The terrace is open.'},
+      {id:'c27', pt:'Vai demorar muito?', en:'Will it take long?'}
+    ]
+  },
+  {
+    title:'Arriving & Talking to the Waiter (Chegada e Interação com o Empregado)',
+    phrases:[
+      {id:'c28', pt:'Boa tarde, têm mesa?', en:'Good afternoon, do you have a table?'},
+      {id:'c29', pt:'Somos dois.', en:'We are two.'},
+      {id:'c30', pt:'Somos três.', en:'We are three.'},
+      {id:'c31', pt:'Somos quatro.', en:'We are four.'},
+      {id:'c32', pt:'Posso ver o menu?', en:'Can I see the menu?'},
+      {id:'c33', pt:'Já sabem o que vão pedir?', en:"Do you know what you're going to order?"},
+      {id:'c34', pt:'Um momento, por favor.', en:'One moment, please.'},
+      {id:'c35', pt:'Estamos prontos.', en:'We are ready.'},
+      {id:'c36', pt:'Ainda não estamos prontos.', en:"We're not ready yet."}
+    ]
+  },
+  {
+    title:'Ordering Food (Pedir Comida)',
+    phrases:[
+      {id:'c37', pt:'Podia ter salmão com arroz?', en:'Could I have salmon with rice?'},
+      {id:'c38', pt:'Eu queria o prato do dia.', en:'I would like the dish of the day.'},
+      {id:'c39', pt:'Para mim, o bife com batatas fritas.', en:'For me, the steak with fries.'},
+      {id:'c40', pt:'O que recomenda?', en:'What do you recommend?'},
+      {id:'c41', pt:'Quais são os pratos do dia?', en:'What are the dishes of the day?'},
+      {id:'c42', pt:'Quais são os especiais?', en:'What are the specials?'},
+      {id:'c43', pt:'Eu queria o menu de sobremesas, por favor.', en:'I would like the dessert menu, please.'},
+      {id:'c44', pt:'Pode vir sem…?', en:'Can it come without…?'},
+      {id:'c45', pt:'É picante?', en:'Is it spicy?'},
+      {id:'c46', pt:'Tem opções vegetarianas?', en:'Do you have vegetarian options?'}
+    ]
+  },
+  {
+    title:'Ordering Drinks (Pedir Bebidas)',
+    phrases:[
+      {id:'c47', pt:'Para beber, queria…', en:'To drink, I would like…'},
+      {id:'c48', pt:'Um copo de…', en:'A glass of…'},
+      {id:'c49', pt:'Uma garrafa de água.', en:'A bottle of water.'},
+      {id:'c50', pt:'Água com gás ou sem gás?', en:'Sparkling or still water?'},
+      {id:'c51', pt:'Um café / uma bica.', en:'An espresso.'},
+      {id:'c52', pt:'Um chá de limão.', en:'A lemon tea.'},
+      {id:'c53', pt:'Uma cerveja, por favor.', en:'A beer, please.'},
+      {id:'c54', pt:'Uma Superbock / uma Sagres.', en:'A Superbock / a Sagres.'},
+      {id:'c55', pt:'Um sumo de…', en:'A juice of…'},
+      {id:'c56', pt:'Têm refrigerantes?', en:'Do you have soft drinks?'}
+    ]
+  },
+  {
+    title:'Food Vocabulary (Vocabulário de Comida)',
+    phrases:[
+      {id:'c57', pt:'Salmão', en:'Salmon'},
+      {id:'c58', pt:'Arroz', en:'Rice'},
+      {id:'c59', pt:'Bife com batatas fritas', en:'Steak with fries'},
+      {id:'c60', pt:'Sandes mista', en:'Ham and cheese sandwich'},
+      {id:'c61', pt:'Sandes de queijo', en:'Cheese sandwich'},
+      {id:'c62', pt:'Pastéis de nata', en:'Custard tarts'},
+      {id:'c63', pt:'Gelado de…', en:'Ice cream of…'},
+      {id:'c64', pt:'Mousse de…', en:'Mousse of…'},
+      {id:'c65', pt:'Pão', en:'Bread'},
+      {id:'c66', pt:'Queijo fresco', en:'Fresh cheese'},
+      {id:'c67', pt:'Manteiga', en:'Butter'},
+      {id:'c68', pt:'Lulas', en:'Squid'},
+      {id:'c69', pt:'Azeitonas verdes/pretas', en:'Green/black olives'},
+      {id:'c70', pt:'Sopa de…', en:'Soup of…'},
+      {id:'c71', pt:'Salada de…', en:'Salad of…'},
+      {id:'c72', pt:'Alcatra', en:'Azorean beef stew'},
+      {id:'c73', pt:'Bitoque', en:'Steak with egg and fries'},
+      {id:'c74', pt:'Polvo grelhado', en:'Grilled octopus'},
+      {id:'c75', pt:'Polvo à Moçambique', en:'Mozambique-style octopus'},
+      {id:'c76', pt:'Porco à Alentejana', en:'Alentejo-style pork with clams'},
+      {id:'c77', pt:'Camarão Moçambique', en:'Mozambique-style shrimp'},
+      {id:'c78', pt:'Paella', en:'Paella'},
+      {id:'c79', pt:'Bacalhau à Brás', en:'Brás-style cod'},
+      {id:'c80', pt:'Frutas', en:'Fruit'},
+      {id:'c81', pt:'Carne', en:'Meat'},
+      {id:'c82', pt:'Peixe', en:'Fish'},
+      {id:'c83', pt:'Massa', en:'Pasta'},
+      {id:'c84', pt:'Vegetais', en:'Vegetables'},
+      {id:'c85', pt:'Frango', en:'Chicken'},
+      {id:'c86', pt:'Salada', en:'Salad'},
+      {id:'c87', pt:'Batatas fritas', en:'French fries'}
+    ]
+  },
+  {
+    title:'Drinks Vocabulary (Vocabulário de Bebidas)',
+    phrases:[
+      {id:'c88', pt:'Superbock', en:'Superbock (beer)'},
+      {id:'c89', pt:'Sagres', en:'Sagres (beer)'},
+      {id:'c90', pt:'Chá de limão', en:'Lemon tea'},
+      {id:'c91', pt:'Bica / café', en:'Espresso'},
+      {id:'c92', pt:'Água', en:'Water'},
+      {id:'c93', pt:'Água de limão / água com limão', en:'Lemon water / water with lemon'},
+      {id:'c94', pt:'Sumo de…', en:'Juice of…'},
+      {id:'c95', pt:'Refrigerantes', en:'Soft drinks'},
+      {id:'c96', pt:'Cerveja', en:'Beer'},
+      {id:'c97', pt:'Vodka', en:'Vodka'},
+      {id:'c98', pt:'Rum', en:'Rum'},
+      {id:'c99', pt:'Espíritos', en:'Spirits'},
+      {id:'c100', pt:'Vinho tinto / branco / verde / rosé', en:'Red / white / green / rosé wine'},
+      {id:'c101', pt:'Sidra', en:'Cider'},
+      {id:'c102', pt:'Copo de…', en:'Glass of…'}
+    ]
+  },
+  {
+    title:'Utensils & Restaurant Objects (Utensílios e Objetos do Restaurante)',
+    phrases:[
+      {id:'c103', pt:'Garfo', en:'Fork'},
+      {id:'c104', pt:'Faca', en:'Knife'},
+      {id:'c105', pt:'Colher', en:'Spoon'},
+      {id:'c106', pt:'Colher de sopa', en:'Tablespoon'},
+      {id:'c107', pt:'Colher de chá', en:'Teaspoon'},
+      {id:'c108', pt:'Prato', en:'Plate'},
+      {id:'c109', pt:'Copo', en:'Glass'},
+      {id:'c110', pt:'Taça', en:'Bowl / cup'},
+      {id:'c111', pt:'Guardanapo', en:'Napkin'},
+      {id:'c112', pt:'Palito', en:'Toothpick'},
+      {id:'c113', pt:'Prato fundo', en:'Soup plate'},
+      {id:'c114', pt:'Travessa', en:'Serving dish'},
+      {id:'c115', pt:'Jarra', en:'Pitcher / jug'}
+    ]
+  },
+  {
+    title:'Asking About the Menu (Perguntar sobre o Menu)',
+    phrases:[
+      {id:'c116', pt:'Do que é feito?', en:'What is it made of?'},
+      {id:'c117', pt:'Tem alergias?', en:'Do you have allergies?'},
+      {id:'c118', pt:'É picante?', en:'Is it spicy?'},
+      {id:'c119', pt:'É vegetariano?', en:'Is it vegetarian?'},
+      {id:'c120', pt:'É vegan?', en:'Is it vegan?'},
+      {id:'c121', pt:'Pode vir sem…?', en:'Can it be made without…?'},
+      {id:'c122', pt:'O prato é grande?', en:'Is the dish large?'},
+      {id:'c123', pt:'Posso trocar o acompanhamento?', en:'Can I change the side dish?'}
+    ]
+  },
+  {
+    title:'After the Meal & Paying (Depois da Refeição e Pagar)',
+    phrases:[
+      {id:'c124', pt:'A comida estava boa?', en:'Was the food good?'},
+      {id:'c125', pt:'Nós gostámos.', en:'We liked it.'},
+      {id:'c126', pt:'A conta, por favor.', en:'The bill, please.'},
+      {id:'c127', pt:'Gostaria da conta, por favor.', en:'I would like the bill, please.'},
+      {id:'c128', pt:'Queria pagar com dinheiro.', en:'I would like to pay with cash.'},
+      {id:'c129', pt:'Queria pagar com cartão.', en:'I would like to pay with card.'},
+      {id:'c130', pt:'Quer pagar já?', en:'Do you want to pay now?'},
+      {id:'c131', pt:'Aqui está.', en:'Here it is.'},
+      {id:'c132', pt:'Troco', en:'Change (money)'},
+      {id:'c133', pt:'Cêntimos', en:'Cents'},
+      {id:'c134', pt:'Euros', en:'Euros'},
+      {id:'c135', pt:'Quer o recibo?', en:'Do you want the receipt?'},
+      {id:'c136', pt:'Pode ficar com o troco.', en:'You can keep the change.'},
+      {id:'c137', pt:'Estava tudo ótimo, obrigado/obrigada.', en:'Everything was great, thank you.'},
+      {id:'c138', pt:'Obrigado, até à próxima.', en:'Thank you, see you next time.'},
+      {id:'c139', pt:'Estou a aprender português, quero praticar o meu português.', en:'I am learning Portuguese, I want to practise my Portuguese.'}
+    ]
+  }
+];
+
+const containerOrdering = document.getElementById('phrasebookOrdering');
+
+sectionsOrdering.forEach(section => {
+  const secDiv = document.createElement('div');
+
+  const h2 = document.createElement('h2');
+  const titleSpan = document.createElement('span');
+  titleSpan.textContent = section.title;
+  h2.appendChild(titleSpan);
+
+  const controls = document.createElement('div');
+  controls.className = 'section-controls';
+
+  const repeatBtn = document.createElement('button');
+  repeatBtn.className = 'repeat';
+  repeatBtn.textContent = 'Listen & Repeat Section';
+  repeatBtn.addEventListener('click', () => repeatSection(section));
+  controls.appendChild(repeatBtn);
+
+  const downloadBtn = document.createElement('button');
+  downloadBtn.className = 'download';
+  downloadBtn.textContent = 'Download Section Audio';
+  downloadBtn.addEventListener('click', () => downloadSection(section, h2));
+  controls.appendChild(downloadBtn);
+
+  h2.appendChild(controls);
+  secDiv.appendChild(h2);
+
+  const progressMsg = document.createElement('div');
+  progressMsg.className = 'progress-message';
+  secDiv.appendChild(progressMsg);
+
+  const table = document.createElement('table');
+  const thead = document.createElement('thead');
+  thead.innerHTML = '<tr><th>Portuguese</th><th>English</th><th>Actions</th></tr>';
+  table.appendChild(thead);
+
+  const tbody = document.createElement('tbody');
+
+  section.phrases.forEach(ph => {
+    const tr = document.createElement('tr');
+
+    const tdPt = document.createElement('td');
+    tdPt.className = 'pt';
+    tdPt.textContent = ph.pt;
+
+    const tdEn = document.createElement('td');
+    tdEn.className = 'en';
+    tdEn.textContent = ph.en;
+
+    const tdActions = document.createElement('td');
+    tdActions.className = 'actions';
+
+    const playBtn = document.createElement('button');
+    playBtn.className = 'play';
+    playBtn.textContent = 'Play';
+    playBtn.addEventListener('click', () => playAudio(ph.id, 1));
+    tdActions.appendChild(playBtn);
+
+    const slowBtn = document.createElement('button');
+    slowBtn.className = 'slow';
+    slowBtn.textContent = 'Slow';
+    slowBtn.addEventListener('click', () => playAudio(ph.id, 0.8));
+    tdActions.appendChild(slowBtn);
+
+    tr.appendChild(tdPt);
+    tr.appendChild(tdEn);
+    tr.appendChild(tdActions);
+    tbody.appendChild(tr);
+  });
+
+  table.appendChild(tbody);
+  secDiv.appendChild(table);
+  containerOrdering.appendChild(secDiv);
+});
+
+// Ordering quiz setup
+const orderingBtn = document.getElementById('startQuizOrdering');
+const orderingStep = document.getElementById('quizStepOrdering');
+const orderingBox = document.getElementById('quizBoxOrdering');
+
+orderingBtn.addEventListener('click', () => {
+  closeActiveQuiz();
+  orderingBox.style.display = 'none';
+  orderingStep.innerHTML = '';
+  showModeChooser(orderingStep, mode => {
+    const phrases = sectionsOrdering.flatMap(s => s.phrases);
+    if(mode === 'audio'){
+      startAudioQuiz({
+        phrases,
+        container: orderingBox,
+        onBeforeStart: () => {
+          closeActiveQuiz();
+          orderingBox.innerHTML = '';
+          orderingBox.style.display = 'block';
+        }
+      });
+    }else{
+      startTextQuiz({
+        mode,
+        phrases,
+        container: orderingBox,
+        onBeforeStart: () => {
+          closeActiveQuiz();
+          orderingBox.innerHTML = '';
+          orderingBox.style.display = 'block';
+        }
+      });
+    }
+  });
+});
+
+/* -----------------------------
+   ORDERING FLASHCARDS
+----------------------------- */
+
+const flashcardBox = document.getElementById('flashcardBox');
+const startFlashcardsBtn = document.getElementById('startFlashcards');
+const prevFlashcardBtn = document.getElementById('prevFlashcard');
+const nextFlashcardBtn = document.getElementById('nextFlashcard');
+const shuffleFlashcardsBtn = document.getElementById('shuffleFlashcards');
+const flipFlashcardBtn = document.getElementById('flipFlashcard');
+
+const allPhrasesOrdering = sectionsOrdering.flatMap(s => s.phrases);
+
+let flashcardOrder = [];
+let flashcardIndex = 0;
+let flashcardSide = 'pt'; // 'pt' or 'en'
+
+function initFlashcards(){
+  flashcardOrder = shuffle(allPhrasesOrdering.slice());
+  flashcardIndex = 0;
+  flashcardSide = 'pt';
+  renderFlashcard();
+}
+
+function renderFlashcard(){
+  if(!flashcardOrder.length){
+    flashcardBox.style.display = 'none';
+    return;
+  }
+  const item = flashcardOrder[flashcardIndex];
+  flashcardBox.style.display = 'block';
+  flashcardBox.innerHTML = '';
+
+  const img = document.createElement('img');
+  img.src = 'img/' + item.id + '.webp';
+  img.alt = item.pt;
+  img.onerror = () => { img.style.display = 'none'; };
+
+  const mainDiv = document.createElement('div');
+  mainDiv.className = 'flashcard-text-main';
+  const subDiv = document.createElement('div');
+  subDiv.className = 'flashcard-text-sub';
+
+  if(flashcardSide === 'pt'){
+    mainDiv.textContent = item.pt;
+    subDiv.textContent = '';
+    flipFlashcardBtn.textContent = '🔁 Flip to English';
+  }else{
+    mainDiv.textContent = item.en;
+    subDiv.textContent = '';
+    flipFlashcardBtn.textContent = '🔁 Flip to Portuguese';
+  }
+
+  const indexDiv = document.createElement('div');
+  indexDiv.className = 'flashcard-index';
+  indexDiv.textContent = `${flashcardIndex + 1} / ${flashcardOrder.length}`;
+
+  const audioDiv = document.createElement('div');
+  audioDiv.className = 'flashcard-audio';
+  const playBtn = document.createElement('button');
+  playBtn.className = 'play';
+  playBtn.textContent = 'Play';
+  playBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    playAudio(item.id, 1);
+  });
+  const slowBtn = document.createElement('button');
+  slowBtn.className = 'slow';
+  slowBtn.textContent = 'Slow';
+  slowBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    playAudio(item.id, 0.8);
+  });
+  audioDiv.appendChild(playBtn);
+  audioDiv.appendChild(slowBtn);
+
+  flashcardBox.appendChild(img);
+  flashcardBox.appendChild(mainDiv);
+  flashcardBox.appendChild(subDiv);
+  flashcardBox.appendChild(audioDiv);
+  flashcardBox.appendChild(indexDiv);
+}
+
+startFlashcardsBtn.addEventListener('click', () => {
+  initFlashcards();
+});
+
+nextFlashcardBtn.addEventListener('click', () => {
+  if(!flashcardOrder.length) return;
+  flashcardIndex = (flashcardIndex + 1) % flashcardOrder.length;
+  flashcardSide = 'pt';
+  renderFlashcard();
+});
+
+prevFlashcardBtn.addEventListener('click', () => {
+  if(!flashcardOrder.length) return;
+  flashcardIndex = (flashcardIndex - 1 + flashcardOrder.length) % flashcardOrder.length;
+  flashcardSide = 'pt';
+  renderFlashcard();
+});
+
+shuffleFlashcardsBtn.addEventListener('click', () => {
+  if(!allPhrasesOrdering.length) return;
+  flashcardOrder = shuffle(allPhrasesOrdering.slice());
+  flashcardIndex = 0;
+  flashcardSide = 'pt';
+  renderFlashcard();
+});
+
+flipFlashcardBtn.addEventListener('click', () => {
+  if(!flashcardOrder.length) return;
+  flashcardSide = (flashcardSide === 'pt') ? 'en' : 'pt';
+  renderFlashcard();
+});
+
+/* -----------------------------
+   MAIN TABS & PHONETICS + BASIC SUBTABS
+----------------------------- */
+
+// main tabs
+const tabButtons = document.querySelectorAll('.tab');
+const tabPanels  = document.querySelectorAll('.tab-panel');
+
+tabButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const target = btn.dataset.tab; // "phonetics", "basic", "ordering"
+
+    tabButtons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    tabPanels.forEach(panel => {
+      const isTarget = panel.id === 'tab-' + target;
+      panel.classList.toggle('active', isTarget);
+    });
+  });
+});
+
+// phonetics subtabs
+const phonSubtabButtons = document.querySelectorAll('.subtab-phon');
+const subPanels = {
+  cons: document.getElementById('sub-cons'),
+  vowels: document.getElementById('sub-vowels')
+};
+
+phonSubtabButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const target = btn.dataset.subtab; // "cons" or "vowels"
+
+    phonSubtabButtons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    Object.keys(subPanels).forEach(key => {
+      subPanels[key].classList.toggle('active', key === target);
+    });
+  });
+});
+
+// basic conversation subtabs
+const basicSubtabButtons = document.querySelectorAll('.subtab-basic');
+const basicPanels = {
+  basic1: document.getElementById('basic1-panel'),
+  basic2: document.getElementById('basic2-panel')
+};
+
+basicSubtabButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const target = btn.dataset.basic; // "basic1" or "basic2"
+
+    basicSubtabButtons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    Object.keys(basicPanels).forEach(key => {
+      basicPanels[key].classList.toggle('active', key === target);
+    });
+  });
+});
+</script>
+
+</body>
+</html>
